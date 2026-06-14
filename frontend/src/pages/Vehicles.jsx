@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { listVehicles, createVehicle, deleteVehicle } from "../api/client.js";
 import RiskBadge from "../components/RiskBadge.jsx";
 import Select from "../components/Select.jsx";
@@ -83,8 +84,10 @@ export default function Vehicles() {
               </thead>
               <tbody>
                 {vehicles.map((v) => (
-                  <tr key={v.id} className="border-b border-line/70 hover:bg-neutral-50">
-                    <td className="py-3 pr-4 font-bold text-ink">{v.name}</td>
+                  <tr key={v.id} className="border-b border-line/70 hover:bg-slate-50">
+                    <td className="py-3 pr-4">
+                      <Link to={`/vehicles/${v.id}`} className="font-bold text-ink hover:text-brand transition-colors">{v.name}</Link>
+                    </td>
                     <td className="py-3 pr-4 text-muted">{v.model}</td>
                     <td className="py-3 pr-4 capitalize text-muted">{v.type}</td>
                     <td className="py-3 pr-4">
@@ -92,7 +95,9 @@ export default function Vehicles() {
                     </td>
                     <td className="py-3 pr-4"><RiskBadge level={v.latest_risk_level} /></td>
                     <td className="py-3 pr-4 text-subtle text-[11px] whitespace-nowrap">{formatDate(v.created_at)}</td>
-                    <td className="py-3 text-right">
+                    <td className="py-3 text-right whitespace-nowrap">
+                      <Link to={`/vehicles/${v.id}`}
+                        className="text-[10px] uppercase tracking-wider font-bold text-brand hover:underline mr-3">View</Link>
                       <button onClick={() => remove(v.id)}
                         className="text-[10px] uppercase tracking-wider font-bold text-risk-high hover:underline">Delete</button>
                     </td>

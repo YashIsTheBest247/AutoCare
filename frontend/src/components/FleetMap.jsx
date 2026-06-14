@@ -1,4 +1,5 @@
 import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip } from "react-leaflet";
+import { Link } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import RiskBadge from "./RiskBadge.jsx";
 
@@ -55,6 +56,9 @@ export default function FleetMap({ vehicles }) {
                     <span className="text-xs text-muted">Risk</span>
                     <RiskBadge level={v.latest_risk_level} />
                   </div>
+                  <Link to={`/vehicles/${v.id}`} className="block text-center text-xs font-semibold text-brand hover:underline pt-1">
+                    View details →
+                  </Link>
                 </div>
               </Popup>
             </CircleMarker>
