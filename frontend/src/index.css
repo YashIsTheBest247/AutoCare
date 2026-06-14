@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-paper text-ink antialiased;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-card border border-line rounded-2xl shadow-soft transition-all duration-300 ease-out hover:shadow-lift hover:-translate-y-0.5;
+  }
+  .panel {
+    @apply bg-paper border border-line rounded-xl;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand to-brand-light text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-all hover:from-brand-dark hover:to-brand disabled:opacity-50;
+  }
+  .btn-pill {
+    @apply inline-flex items-center justify-center gap-1.5 bg-card border border-line text-ink font-semibold text-sm px-4 py-2.5 rounded-xl transition-colors hover:bg-slate-50 disabled:opacity-50;
+  }
+  .input {
+    @apply w-full bg-card border border-line rounded-xl px-3.5 py-2.5 text-sm text-ink placeholder:text-subtle focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand;
+    accent-color: #2563eb;
+  }
+  .input option:checked,
+  .input option:hover {
+    background-color: #2563eb;
+    color: #ffffff;
+  }
+  .label {
+    @apply block text-xs font-semibold uppercase tracking-wide text-muted mb-1.5;
+  }
+}

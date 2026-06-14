@@ -1,0 +1,30 @@
+services:
+  backend:
+    build: ./backend
+    container_name: autocare-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:////data/autocare.db
+      - MODEL_PATH=/ml/models/failure_model.joblib
+      - MODEL_META_PATH=/ml/models/model_meta.json
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://localhost
+    volumes:
+      - ./ml:/ml:ro
+      - backend_data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    container_name: autocare-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  backend_data:
