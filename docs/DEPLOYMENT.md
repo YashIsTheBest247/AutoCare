@@ -81,8 +81,14 @@ Serve `frontend/dist` from any static server (nginx, Caddy) and proxy `/api` to 
 | `MODEL_PATH` | `../ml/models/failure_model.joblib` | Trained model artifact |
 | `MODEL_META_PATH` | `../ml/models/model_meta.json` | Model metadata |
 | `CORS_ORIGINS` | localhost origins | Comma-separated allowed origins |
+| `SMTP_HOST` / `MAIL_SERVER` | empty | SMTP server for email alerts (e.g. `smtp.gmail.com`) |
+| `SMTP_PORT` / `MAIL_PORT` | `587` | SMTP port |
+| `SMTP_USER` / `MAIL_USERNAME` | empty | SMTP username |
+| `SMTP_PASSWORD` / `MAIL_PASSWORD` | empty | SMTP password / app password |
+| `SMTP_FROM` / `MAIL_FROM` | `alerts@autocare.ai` | From address |
+| `SMTP_USE_TLS` / `MAIL_STARTTLS` | `true` | Use STARTTLS |
 
-Copy `backend/.env.example` → `backend/.env` to customize.
+Email alerts are optional; the app runs fully without SMTP. Both `SMTP_*` and `MAIL_*` variable names are accepted. Copy `backend/.env.example` → `backend/.env` to customize.
 
 ### Frontend env
 | Variable | Default | Purpose |

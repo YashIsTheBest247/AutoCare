@@ -84,6 +84,26 @@ RandomForest pipeline trained on 6,000 generated samples:
 
 ---
 
+## Email Alerts (optional)
+High-risk readings can trigger an email. It's **off until SMTP is configured** — the app works fully without it.
+
+Add credentials to `backend/.env` (both `MAIL_*` and `SMTP_*` names are accepted):
+
+```env
+MAIL_SERVER=smtp.gmail.com      # or SMTP_HOST
+MAIL_PORT=587                   # or SMTP_PORT
+MAIL_USERNAME=you@gmail.com     # or SMTP_USER
+MAIL_PASSWORD=your_app_password # or SMTP_PASSWORD
+MAIL_FROM=you@gmail.com         # or SMTP_FROM
+MAIL_STARTTLS=True              # or SMTP_USE_TLS
+```
+
+Then **restart the backend** (the `.env` is read at startup). On the **Settings** page, enable email alerts, set a recipient and minimum risk level, and use **Send Test** to verify.
+
+> Gmail requires an **App Password** (Google Account → Security → App passwords, with 2-Step Verification enabled) — not your normal password. Keep `backend/.env` out of version control (it's already git-ignored).
+
+---
+
 ## Documentation
 | Document | Contents |
 |----------|----------|
