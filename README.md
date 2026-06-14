@@ -17,14 +17,16 @@ AutoCare AI monitors vehicle sensor telemetry, detects anomalies, predicts failu
 - **Live Fleet Map** — interactive map (Leaflet + OpenStreetMap, no API key) with risk-colored vehicle pins and detail popups.
 - **Global Search & Notifications** — top-bar search across vehicles/pages and a live notifications panel of active alerts.
 - **Live Telemetry Simulation** — a dashboard "Live Feed" toggle that streams synthetic readings so the UI updates in real time.
+- **Prediction Intelligence** — an AI decision-support panel: predicted component, failure type, model confidence, maintenance priority, estimated downtime & cost impact, and root-cause indicators.
 - **Explainability** — per-prediction feature contributions ("why this score"), component-level health (engine/battery/cooling/drivetrain/economy), and Remaining Useful Life (RUL) estimate.
 - **Forecasting** — projects upcoming sensor trends and warns before a value crosses a danger limit.
+- **Reports** — fleet summary stats and one-click CSV exports for telemetry and predictions.
 - **Maintenance Scheduler** — create/track/complete service tasks per vehicle with priorities.
 - **Configurable Thresholds** — tune anomaly ranges per sensor from a Settings page (persisted).
 - **Email Alerts** — optional SMTP email on new high-risk readings (configurable recipient & severity).
 - **Vehicle Comparison** — compare health, RUL, and component breakdown across up to 3 vehicles.
 - **CSV Import/Export** — bulk-import sensor readings and export readings/predictions.
-- **Dark Mode** — light/dark theme toggle (persisted).
+- **Theming** — minimal black-on-white editorial light theme with a neutral-charcoal dark mode (persisted toggle); charts re-color to match the active theme.
 - **JWT Authentication** — login/register, token-protected API, default seeded admin, per-user sessions with logout.
 - **Edge-first** — sub-millisecond CPU inference with a graceful heuristic fallback if the model is unavailable.
 
@@ -135,7 +137,7 @@ autocare/
 ├── README.md                 # This file
 ├── docker-compose.yml        # Orchestrates backend + frontend containers
 ├── .gitignore
-├── docs/                     # Architecture, DB, API, deployment, presentation
+├── docs/                     # Architecture, DB, API, deployment
 │
 ├── ml/                       # Machine learning pipeline
 │   ├── requirements.txt
@@ -169,13 +171,15 @@ autocare/
     ├── postcss.config.js
     ├── index.html
     └── src/
-        ├── main.jsx          # React/Router bootstrap
-        ├── App.jsx           # Routes + layout
-        ├── index.css         # Tailwind + component classes
-        ├── api/client.js     # Axios API client
+        ├── main.jsx          # React/Router/Auth bootstrap + theme init
+        ├── App.jsx           # Auth guard, routes + layout
+        ├── index.css         # Theme tokens (light/dark) + component classes
+        ├── api/client.js     # Axios client + JWT interceptors
+        ├── context/auth.jsx  # Auth provider (token + user)
         ├── components/       # Logo, Sidebar, Topbar, KpiCard, HealthGauge, RiskLevelBar,
-        │                     #   RiskBadge, Recommendations, FleetMap, Select, AlertList, ...
-        └── pages/            # Dashboard, Vehicles, VehicleDetail, SensorData, Predictions, Analytics
+        │                     #   RiskBadge, Recommendations, FleetMap, Select, Meters, AlertList, ...
+        └── pages/            # Dashboard, Vehicles, VehicleDetail, SensorData, Predictions,
+                              #   Analytics, Maintenance, Compare, Reports, Settings, Login
 ```
 
 ---
@@ -225,9 +229,12 @@ autocare/
 #### `backend/app/models/` — ORM
 | File | Purpose |
 |------|---------|
-| `vehicle.py` | `Vehicle` table (incl. `latitude`/`longitude`) + relationships to readings and predictions. |
+| `vehicle.py` | `Vehicle` table (incl. `latitude`/`longitude`) + relationships to readings, predictions, maintenance. |
 | `sensor_data.py` | `SensorData` table (the five sensor features + timestamp). |
 | `prediction.py` | `Prediction` table (risk score/level, probability, recommendation). |
+| `maintenance.py` | `MaintenanceTask` table (title, status, priority, due/completed dates). |
+| `setting.py` | Key/value `Setting` table (anomaly thresholds, alert config). |
+| `user.py` | `User` table (email, hashed password, role) for auth. |
 | `__init__.py` | Re-exports the models for easy importing. |
 
 #### `backend/app/schemas/` — Pydantic
@@ -235,33 +242,46 @@ autocare/
 |------|---------|
 | `vehicle.py` | `VehicleCreate`, `VehicleRead`, `VehicleDetail` (health summary + lat/lng). |
 | `sensor_data.py` | `SensorDataCreate`, `SensorDataRead` (with anomalies), validated ranges. |
-| `prediction.py` | `PredictionInput`, `PredictionResult`, `PredictionRead`. |
+| `prediction.py` | `PredictionInput`, `PredictionResult` (risk + full diagnostic intelligence), `PredictionRead`. |
+| `maintenance.py` | `MaintenanceCreate/Update/Read` schemas. |
+| `settings.py` | `ThresholdsUpdate`, `AlertConfig`, `EmailTest`. |
+| `auth.py` | `UserCreate`, `LoginRequest`, `UserRead`, `Token`. |
 | `__init__.py` | Aggregates schema exports. |
 
 #### `backend/app/crud/` — Data access
 | File | Purpose |
 |------|---------|
-| `vehicle.py` | Create/get/list/count/delete vehicles. |
+| `vehicle.py` | Create/get/list/count/delete vehicles (auto-assigns coordinates). |
 | `sensor_data.py` | Create and query readings (per-vehicle, latest, all). |
 | `prediction.py` | Create and query predictions (per-vehicle, latest, all). |
+| `maintenance.py` | Create/get/list/update/delete maintenance tasks. |
+| `user.py` | Get/create users; lookup by email. |
 | `__init__.py` | Exposes the CRUD modules. |
 
 #### `backend/app/services/` — Business logic
 | File | Purpose |
 |------|---------|
-| `prediction_service.py` | Turns features into a risk score/level/recommendation using the model + thresholds. |
-| `anomaly_service.py` | Rule-based out-of-range detection per sensor. |
+| `prediction_service.py` | Turns features into a risk score/level/recommendation + full diagnostic intelligence. |
+| `analytics_service.py` | Component health, RUL, feature contributions, forecast, and failure diagnosis. |
+| `anomaly_service.py` | Rule-based out-of-range detection per sensor (runtime-configurable thresholds). |
 | `dashboard_service.py` | Aggregates fleet KPIs, health scores, alerts, and risk trends. |
+| `settings_service.py` | Loads/persists thresholds and alert config; runtime threshold updates. |
+| `email_service.py` | SMTP email sending for high-risk alerts (graceful no-op if unconfigured). |
+| `auth_service.py` | Password hashing (PBKDF2), JWT issue/verify, `get_current_user` dependency. |
 | `__init__.py` | Exposes the service modules. |
 
 #### `backend/app/routes/` — API
 | File | Purpose |
 |------|---------|
+| `auth.py` | `/api/auth` — register, login (JWT), current user (open router). |
 | `vehicles.py` | `/api/vehicles` CRUD endpoints. |
-| `sensor_data.py` | `/api/sensor-data` — store readings (auto-generates a prediction) and query them. |
-| `predictions.py` | `/api/predictions` — stateless predict, persist-per-vehicle, history, model info. |
+| `sensor_data.py` | `/api/sensor-data` — store readings (auto-prediction + alert), query, CSV import/export. |
+| `predictions.py` | `/api/predictions` — stateless predict, persist-per-vehicle, history, CSV export, model info. |
 | `dashboard.py` | `/api/dashboard/overview` aggregated KPIs. |
-| `__init__.py` | Combines all routers into `api_router`. |
+| `analytics.py` | `/api/analytics/vehicles/{id}` — component health, contributions, RUL, forecast. |
+| `maintenance.py` | `/api/maintenance` — task CRUD. |
+| `settings.py` | `/api/settings` — thresholds, alert config, email test. |
+| `__init__.py` | Combines routers; the data API is JWT-protected, auth router is open. |
 
 #### `backend/app/ml/`
 | File | Purpose |
@@ -275,34 +295,36 @@ autocare/
 | `nginx.conf` | Serves the SPA and proxies `/api` to the backend container. |
 | `package.json` | Scripts and dependencies. |
 | `vite.config.js` | Dev server config + `/api` proxy to port 8000. |
-| `tailwind.config.js` | Blue automotive light theme (brand, risk colors, animations). |
+| `tailwind.config.js` | Theme tokens (CSS-variable light/dark), brand/accent, risk colors, animations. |
 | `postcss.config.js` | Tailwind/Autoprefixer pipeline. |
 | `index.html` | App shell + font preload. |
 
 #### `frontend/src/`
 | File | Purpose |
 |------|---------|
-| `main.jsx` | Mounts React with the Router. |
-| `App.jsx` | Wraps pages in `Layout` and defines routes. |
-| `index.css` | Tailwind layers + reusable component classes (`card`, `btn-primary`, `input`). |
-| `api/client.js` | Axios instance + typed API helper functions. |
+| `main.jsx` | Mounts React with Router + `AuthProvider`; applies initial theme. |
+| `App.jsx` | Auth guard (login gate) + routes inside `Layout`. |
+| `index.css` | Theme tokens (light/dark CSS variables) + component classes (`card`, `btn-primary`, `input`). |
+| `api/client.js` | Axios instance, JWT interceptors, auth + CSV helpers. |
+| `context/auth.jsx` | Auth context provider (token + user, sign in/out). |
 
 #### `frontend/src/components/`
 | File | Purpose |
 |------|---------|
-| `Layout.jsx` | Sidebar + Topbar + animated main content shell. |
-| `Logo.jsx` | Gradient "AutoCare" mark + wordmark (animated heartbeat). |
-| `Sidebar.jsx` | Blue gradient nav with active-route highlighting. |
-| `Topbar.jsx` | Page title, global search dropdown, and notifications bell. |
-| `KpiCard.jsx` | Reusable KPI metric card (staggered entrance). |
+| `Layout.jsx` | Sidebar + Topbar + animated main content shell (mobile drawer). |
+| `Logo.jsx` | Monochrome "AutoCare" mark + wordmark. |
+| `Sidebar.jsx` | App nav with strong active state + top user/sign-out block. |
+| `Topbar.jsx` | Page title, global search, notifications bell, theme toggle, mobile menu. |
+| `KpiCard.jsx` | Executive KPI metric card (large metric, small label, staggered entrance). |
 | `HealthGauge.jsx` | Circular SVG health-score gauge (color by score). |
 | `RiskLevelBar.jsx` | Gradient Low→High risk bar with marker. |
 | `RiskBadge.jsx` | Color-coded Low/Medium/High badge. |
 | `Recommendations.jsx` | AI maintenance recommendation list. |
+| `Meters.jsx` | Component-health and feature-contribution bar meters. |
 | `FleetMap.jsx` | Leaflet/OpenStreetMap map with risk-colored vehicle pins. |
 | `Select.jsx` | Custom themed dropdown (replaces native `<select>`). |
 | `AlertList.jsx` | Renders active anomaly/risk alerts. |
-| `common.jsx` | Shared `Spinner`, `EmptyState`, `SectionTitle`, and `formatDate`. |
+| `common.jsx` | Shared `Spinner`, `EmptyState`, `SectionTitle`, `formatDate`, `useChartTheme`. |
 
 #### `frontend/src/pages/`
 | File | Purpose |
@@ -314,8 +336,10 @@ autocare/
 | `Maintenance.jsx` | Schedule, track, complete, and delete maintenance tasks. |
 | `Compare.jsx` | Side-by-side comparison of up to 3 vehicles (health, RUL, components). |
 | `Settings.jsx` | Configure anomaly thresholds and email alert settings. |
-| `Predictions.jsx` | Run/save predictions, result card, and prediction history. |
+| `Predictions.jsx` | Diagnostic workspace — grouped inputs + AI intelligence panel (risk, failure analysis, maintenance planning) + history. |
 | `Analytics.jsx` | Risk distribution, model feature importance, telemetry trends, model info. |
+| `Reports.jsx` | Fleet summary stats + CSV export hub. |
+| `Login.jsx` | Split-screen login/register (looping video + features) with JWT auth. |
 
 ---
 
