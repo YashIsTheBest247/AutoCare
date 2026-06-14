@@ -3,12 +3,18 @@ import { listVehicles, listSensorData, createSensorData, importSensorCsv, export
 import Select from "../components/Select.jsx";
 import { Spinner, EmptyState, SectionTitle, formatDate } from "../components/common.jsx";
 
-const FIELDS = [
-  { key: "temperature", label: "Engine Temp (°C)", placeholder: "90" },
-  { key: "battery_voltage", label: "Battery Voltage (V)", placeholder: "13.8" },
-  { key: "rpm", label: "RPM", placeholder: "2400" },
-  { key: "fuel_efficiency", label: "Fuel Efficiency (km/L)", placeholder: "16" },
-  { key: "vibration", label: "Vibration Level", placeholder: "0.9" },
+const GROUPS = [
+  { title: "Engine", fields: [
+    { key: "temperature", label: "Temperature (°C)", placeholder: "90" },
+    { key: "rpm", label: "RPM", placeholder: "2400" },
+  ] },
+  { title: "Electrical", fields: [
+    { key: "battery_voltage", label: "Battery Voltage (V)", placeholder: "13.8" },
+  ] },
+  { title: "Performance", fields: [
+    { key: "fuel_efficiency", label: "Fuel Efficiency (km/L)", placeholder: "16" },
+    { key: "vibration", label: "Vibration Level", placeholder: "0.9" },
+  ] },
 ];
 
 const empty = { temperature: "", battery_voltage: "", rpm: "", fuel_efficiency: "", vibration: "" };
@@ -82,11 +88,18 @@ export default function SensorData() {
               placeholder="Select a vehicle"
             />
           </div>
-          {FIELDS.map((f) => (
-            <div key={f.key}>
-              <label className="label">{f.label}</label>
-              <input className="input" type="number" step="any" required placeholder={f.placeholder}
-                value={form[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })} />
+          {GROUPS.map((g) => (
+            <div key={g.title}>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-subtle mb-2 pb-1.5 border-b border-line">{g.title}</p>
+              <div className="space-y-3">
+                {g.fields.map((f) => (
+                  <div key={f.key}>
+                    <label className="label">{f.label}</label>
+                    <input className="input" type="number" step="any" required placeholder={f.placeholder}
+                      value={form[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })} />
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
           <button className="btn-primary w-full" disabled={saving || !selected}>

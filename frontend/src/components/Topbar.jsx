@@ -5,19 +5,27 @@ import RiskBadge from "./RiskBadge.jsx";
 import { formatDate } from "./common.jsx";
 
 const titles = {
-  "/": "Dashboard",
-  "/vehicles": "Vehicle Management",
-  "/sensor-data": "Sensor Data Monitoring",
-  "/predictions": "Predictive Maintenance",
+  "/": "Fleet Overview",
+  "/vehicles": "Fleet",
+  "/sensor-data": "Vehicle Diagnostics",
+  "/predictions": "Predictive Intelligence",
   "/analytics": "Analytics",
+  "/maintenance": "Maintenance",
+  "/compare": "Fleet Comparison",
+  "/reports": "Reports",
+  "/settings": "Settings",
 };
 
 const PAGES = [
-  { label: "Dashboard", path: "/" },
-  { label: "Vehicles", path: "/vehicles" },
-  { label: "Sensor Data", path: "/sensor-data" },
+  { label: "Overview", path: "/" },
+  { label: "Fleet", path: "/vehicles" },
+  { label: "Diagnostics", path: "/sensor-data" },
   { label: "Predictions", path: "/predictions" },
   { label: "Analytics", path: "/analytics" },
+  { label: "Maintenance", path: "/maintenance" },
+  { label: "Compare", path: "/compare" },
+  { label: "Reports", path: "/reports" },
+  { label: "Settings", path: "/settings" },
 ];
 
 export default function Topbar({ onMenu = () => {} }) {
@@ -211,7 +219,7 @@ export default function Topbar({ onMenu = () => {} }) {
                     <li
                       key={i}
                       onClick={() => { navigate("/"); setBellOpen(false); }}
-                      className="px-4 py-3 hover:bg-slate-50 transition-colors cursor-pointer"
+                      className="px-4 py-3 hover:bg-white/[0.03] transition-colors cursor-pointer"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-semibold text-ink truncate">{a.vehicle_name}</p>

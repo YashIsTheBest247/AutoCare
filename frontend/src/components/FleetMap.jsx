@@ -33,7 +33,7 @@ export default function FleetMap({ vehicles }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {located.map((v) => {
-          const color = RISK_COLORS[v.latest_risk_level] || "#0a6be8";
+          const color = RISK_COLORS[v.latest_risk_level] || "#111111";
           return (
             <CircleMarker
               key={v.id}

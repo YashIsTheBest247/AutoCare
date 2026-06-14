@@ -25,6 +25,13 @@ class PredictionResult(BaseModel):
     rul_days: int = 365
     component_health: dict = {}
     contributions: List[FeatureContribution] = []
+    predicted_component: str = "—"
+    failure_type: str = "—"
+    confidence: float = 0.0
+    maintenance_priority: str = "Low"
+    estimated_cost: float = 0.0
+    estimated_downtime_hours: float = 0.0
+    root_cause_indicators: List[str] = []
 
 
 class PredictionRead(BaseModel):

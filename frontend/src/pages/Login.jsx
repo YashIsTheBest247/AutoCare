@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, register } from "../api/client.js";
 import { useAuth } from "../context/auth.jsx";
-import { LogoMark } from "../components/Logo.jsx";
 
 const FEATURES = [
   "Real-time vehicle health monitoring",
@@ -21,29 +20,7 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "", full_name: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [phase, setPhase] = useState(() => (sessionStorage.getItem("introSeen") ? "split" : "brand"));
-
-  const goSplit = () => {
-    sessionStorage.setItem("introSeen", "1");
-    const v = videoRef.current;
-    if (v) {
-      v.loop = true;
-      try { v.currentTime = 0; v.play(); } catch (e) {}
-    }
-    setPhase("split");
-  };
-
-  useEffect(() => {
-    if (phase === "brand") {
-      const t = setTimeout(() => setPhase("video"), 1400);
-      return () => clearTimeout(t);
-    }
-    if (phase === "video") {
-      const t = setTimeout(() => goSplit(), 1500);
-      return () => clearTimeout(t);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
+  const phase = "split";
 
   const submit = async (e) => {
     e.preventDefault();
@@ -81,16 +58,6 @@ export default function Login() {
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className={`absolute inset-0 transition-all duration-700 ${split ? "bg-gradient-to-t from-brand-deep/90 via-brand-deep/55 to-black/30" : "bg-black/10"}`} />
-
-        {phase === "brand" && (
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-gradient-to-br from-brand-light via-brand to-brand-dark animate-fade-up">
-            <div className="h-16 w-16 rounded-2xl bg-white/15 ring-1 ring-white/25 flex items-center justify-center">
-              <LogoMark className="h-10 w-10" />
-            </div>
-            <p className="mt-4 text-4xl font-extrabold tracking-tight text-white">AutoCare <span className="text-white/80">AI</span></p>
-            <p className="text-sm text-white/80 mt-2">Predictive Maintenance · Edge AI</p>
-          </div>
-        )}
 
         {split && (
           <div className="relative z-10 h-full flex flex-col justify-center p-8 sm:p-10 animate-fade-up">

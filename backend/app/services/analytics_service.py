@@ -71,6 +71,40 @@ def feature_contributions(f: dict) -> list:
     return contributions
 
 
+COMPONENT_META = {
+    "engine": {"failure": "Engine overheating / thermal stress", "cost": 1200, "downtime": 8.0},
+    "battery": {"failure": "Battery / charging system degradation", "cost": 350, "downtime": 2.0},
+    "cooling": {"failure": "Cooling system inefficiency", "cost": 600, "downtime": 4.0},
+    "drivetrain": {"failure": "Drivetrain wear / abnormal vibration", "cost": 900, "downtime": 6.0},
+    "economy": {"failure": "Fuel delivery inefficiency", "cost": 250, "downtime": 2.0},
+}
+
+
+def _priority(level: str, risk_score: float) -> str:
+    if level == "High":
+        return "Critical" if risk_score >= 85 else "High"
+    if level == "Medium":
+        return "Medium"
+    return "Low"
+
+
+def diagnose(components: dict, contributions: list, anomalies: list, risk_score: float, level: str, probability: float) -> dict:
+    predicted = min(components, key=components.get) if components else "engine"
+    meta = COMPONENT_META.get(predicted, COMPONENT_META["engine"])
+    severity = 0.3 + (risk_score / 100.0)
+    indicators = [f"{c['feature'].replace('_', ' ').title()} ({c['contribution']}% of risk)" for c in contributions[:2]]
+    indicators += anomalies[:2]
+    return {
+        "predicted_component": predicted.title(),
+        "failure_type": meta["failure"],
+        "confidence": round(max(probability, 1 - probability) * 100, 1),
+        "maintenance_priority": _priority(level, risk_score),
+        "estimated_cost": round(meta["cost"] * severity / 10) * 10,
+        "estimated_downtime_hours": round(meta["downtime"] * (0.4 + risk_score / 100.0), 1),
+        "root_cause_indicators": indicators or ["No abnormal indicators detected"],
+    }
+
+
 def forecast(readings: list, steps: int = 6) -> dict:
     metrics = ["temperature", "battery_voltage", "vibration"]
     ordered = list(reversed(readings))[-12:]

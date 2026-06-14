@@ -33,6 +33,9 @@ def evaluate(features: dict) -> PredictionResult:
     anomalies = anomaly_service.detect(features)
     level = _level(probability)
     risk_score = round(probability * 100, 2)
+    components = analytics_service.component_health(features)
+    contributions = analytics_service.feature_contributions(features)
+    diagnosis = analytics_service.diagnose(components, contributions, anomalies, risk_score, level, probability)
     return PredictionResult(
         risk_score=risk_score,
         risk_level=level,
@@ -40,6 +43,7 @@ def evaluate(features: dict) -> PredictionResult:
         recommendation=_recommendation(level, anomalies),
         anomalies=anomalies,
         rul_days=analytics_service.remaining_useful_life(risk_score),
-        component_health=analytics_service.component_health(features),
-        contributions=analytics_service.feature_contributions(features),
+        component_health=components,
+        contributions=contributions,
+        **diagnosis,
     )

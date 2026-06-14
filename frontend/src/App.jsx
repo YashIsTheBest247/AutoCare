@@ -8,6 +8,7 @@ import Predictions from "./pages/Predictions.jsx";
 import Analytics from "./pages/Analytics.jsx";
 import Maintenance from "./pages/Maintenance.jsx";
 import Compare from "./pages/Compare.jsx";
+import Reports from "./pages/Reports.jsx";
 import Settings from "./pages/Settings.jsx";
 import Login from "./pages/Login.jsx";
 import { useAuth } from "./context/auth.jsx";
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/maintenance" element={<Maintenance />} />
         <Route path="/compare" element={<Compare />} />
+        <Route path="/reports" element={<Reports />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/login" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />

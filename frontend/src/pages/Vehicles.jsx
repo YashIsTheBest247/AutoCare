@@ -115,7 +115,7 @@ export default function Vehicles() {
               </thead>
               <tbody>
                 {display.map((v) => (
-                  <tr key={v.id} className="border-b border-line/70 hover:bg-slate-50">
+                  <tr key={v.id} className="border-b border-line/70 hover:bg-white/[0.03]">
                     <td className="py-3 pr-4">
                       <Link to={`/vehicles/${v.id}`} className="font-bold text-ink hover:text-brand transition-colors">{v.name}</Link>
                     </td>

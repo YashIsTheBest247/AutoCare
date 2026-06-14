@@ -19,7 +19,7 @@ import FleetMap from "../components/FleetMap.jsx";
 import { ComponentHealthBars, ContributionBars } from "../components/Meters.jsx";
 import { Spinner, EmptyState, SectionTitle, formatDate } from "../components/common.jsx";
 
-const TOOLTIP = { background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 12, fontSize: 12, boxShadow: "0 8px 24px rgba(15,23,42,0.08)" };
+const TOOLTIP = { background: "#ffffff", color: "#111111", border: "1px solid #e5e7eb", borderRadius: 12, fontSize: 12, boxShadow: "0 8px 24px rgba(15,23,42,0.08)" };
 
 const METRICS = [
   { key: "temperature", label: "Engine Temp", unit: "°C" },
@@ -141,9 +141,9 @@ export default function VehicleDetail() {
                     <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} />
-                <YAxis stroke="#94a3b8" fontSize={11} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="time" stroke="#a3a3a3" fontSize={10} />
+                <YAxis stroke="#a3a3a3" fontSize={11} />
                 <Tooltip contentStyle={TOOLTIP} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Area type="monotone" dataKey="temperature" stroke="#ef4444" fill="url(#vd-t)" strokeWidth={2} />
@@ -185,9 +185,9 @@ export default function VehicleDetail() {
               <>
                 <ResponsiveContainer width="100%" height={180}>
                   <LineChart data={forecastData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="step" stroke="#94a3b8" fontSize={11} />
-                    <YAxis stroke="#94a3b8" fontSize={11} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="step" stroke="#a3a3a3" fontSize={11} />
+                    <YAxis stroke="#a3a3a3" fontSize={11} />
                     <Tooltip contentStyle={TOOLTIP} />
                     <Line type="monotone" dataKey="temperature" stroke="#ef4444" strokeWidth={2} dot={false} />
                     <Line type="monotone" dataKey="vibration" stroke="#f59e0b" strokeWidth={2} dot={false} />
@@ -225,7 +225,7 @@ export default function VehicleDetail() {
               </thead>
               <tbody>
                 {predictions.map((p) => (
-                  <tr key={p.id} className="border-b border-line/70 hover:bg-slate-50">
+                  <tr key={p.id} className="border-b border-line/70 hover:bg-white/[0.03]">
                     <td className="py-2.5 pr-4 text-subtle text-[11px] whitespace-nowrap">{formatDate(p.created_at)}</td>
                     <td className="py-2.5 pr-4 font-bold text-ink">{p.risk_score}</td>
                     <td className="py-2.5 pr-4"><RiskBadge level={p.risk_level} /></td>

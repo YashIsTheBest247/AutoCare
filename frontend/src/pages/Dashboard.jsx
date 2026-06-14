@@ -23,7 +23,9 @@ import FleetMap from "../components/FleetMap.jsx";
 import { Spinner, SectionTitle, formatDate } from "../components/common.jsx";
 
 const RISK_COLORS = { Low: "#10b981", Medium: "#f59e0b", High: "#ef4444" };
-const TOOLTIP = { background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 12, fontSize: 12, boxShadow: "0 8px 24px rgba(15,23,42,0.08)" };
+const TOOLTIP = { background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 10, fontSize: 12, color: "#111111" };
+const GRID = "#e5e7eb";
+const AXIS = "#a3a3a3";
 
 function buildRecommendations(alerts) {
   if (!alerts || !alerts.length) return [];
@@ -77,11 +79,16 @@ export default function Dashboard() {
   const trend = data.risk_trend.map((p) => ({ time: formatDate(p.created_at), risk: p.risk_score }));
   const aggregateRisk = Math.round(100 - data.average_health_score);
   const recommendations = buildRecommendations(data.active_alerts);
+  const dist = data.risk_distribution || {};
+  const needsMaintenance = (dist.High || 0) + (dist.Medium || 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <p className="text-sm text-muted">Fleet overview · {vehicles.length} vehicles</p>
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-ink">Fleet Overview</h2>
+          <p className="text-sm text-muted mt-0.5">Real-time operational intelligence across {data.total_vehicles} assets</p>
+        </div>
         <button
           onClick={() => setLive((l) => !l)}
           className={live ? "btn-primary" : "btn-pill"}
@@ -89,7 +96,7 @@ export default function Dashboard() {
           {live ? (
             <>
               <span className="h-2 w-2 rounded-full bg-white animate-pulse"></span>
-              Live Feed On — Stop
+              Live · Stop
             </>
           ) : (
             <>
@@ -102,15 +109,19 @@ export default function Dashboard() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard label="Vehicles" value={data.total_vehicles} sub="Monitored fleet" accent="blue" delay={0}
-          icon="M5 11l1.5-4.5h11L19 11m-14 0h14m-14 0v6m14-6v6M7 17h2m6 0h2" />
-        <KpiCard label="Avg Health" value={`${data.average_health_score}%`} sub="Fleet health score" accent="green" delay={80}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <KpiCard label="Fleet Health" value={`${data.average_health_score}%`} sub="Avg across fleet" accent="green" delay={0}
           icon="M3.5 12h4l2 6 4-12 2 6h4.5" />
-        <KpiCard label="Active Alerts" value={data.active_alerts_count} sub="Need attention" accent="red" delay={160}
+        <KpiCard label="Active Vehicles" value={data.total_vehicles} sub="Monitored assets" accent="blue" delay={50}
+          icon="M5 11l1.5-4.5h11L19 11m-14 0h14m-14 0v6m14-6v6M7 17h2m6 0h2" />
+        <KpiCard label="Critical Alerts" value={data.active_alerts_count} sub="Require attention" accent="red" delay={100}
           icon="M12 9v4m0 4h.01M10.29 3.86l-8.48 14.7A1 1 0 002.67 20h18.66a1 1 0 00.86-1.44l-8.48-14.7a1 1 0 00-1.72 0z" />
-        <KpiCard label="Predictions" value={data.total_predictions} sub="Total generated" accent="amber" delay={240}
+        <KpiCard label="Predicted Failures" value={dist.High || 0} sub="High risk (7d)" accent="red" delay={150}
           icon="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+        <KpiCard label="Needs Service" value={needsMaintenance} sub="Med + high risk" accent="amber" delay={200}
+          icon="M14.7 6.3a4 4 0 01-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 015.4-5.4l-2.5 2.5-2-2 2.5-2.5z" />
+        <KpiCard label="Predictions" value={data.total_predictions} sub="Total logged" accent="ink" delay={250}
+          icon="M9 17v-6h2v6m4-10v10M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -172,15 +183,15 @@ export default function Dashboard() {
             <AreaChart data={trend}>
               <defs>
                 <linearGradient id="riskArea" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#0a6be8" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="#0a6be8" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#111111" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#111111" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="time" stroke="#94a3b8" fontSize={11} tickMargin={8} />
-              <YAxis stroke="#94a3b8" fontSize={11} domain={[0, 100]} />
+              <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
+              <XAxis dataKey="time" stroke={AXIS} fontSize={11} tickMargin={8} />
+              <YAxis stroke={AXIS} fontSize={11} domain={[0, 100]} />
               <Tooltip contentStyle={TOOLTIP} />
-              <Area type="monotone" dataKey="risk" stroke="#0a6be8" strokeWidth={2.5} fill="url(#riskArea)" />
+              <Area type="monotone" dataKey="risk" stroke="#111111" strokeWidth={2} fill="url(#riskArea)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

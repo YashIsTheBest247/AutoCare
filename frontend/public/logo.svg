@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" width="320" height="72">
   <defs>
     <linearGradient id="acg" x1="8" y1="58" x2="52" y2="10" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#93b8ff"/>
-      <stop offset="0.5" stop-color="#0a6be8"/>
-      <stop offset="1" stop-color="#0553c0"/>
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="0.5" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#2563eb"/>
     </linearGradient>
     <linearGradient id="badge" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#0a6be8"/>
-      <stop offset="1" stop-color="#4d97ff"/>
+      <stop offset="0" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#60a5fa"/>
     </linearGradient>
   </defs>
   <path d="M12 58 L32 14 L52 58" stroke="url(#acg)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
   <path d="M20 44 H44" stroke="url(#acg)" stroke-width="7" stroke-linecap="round" fill="none"/>
-  <circle cx="49" cy="24" r="5" fill="#4d97ff"/>
+  <circle cx="49" cy="24" r="5" fill="#60a5fa"/>
   <text x="68" y="46" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="800" letter-spacing="-0.5" fill="#0f172a">AutoCare</text>
   <rect x="232" y="24" width="46" height="30" rx="7" fill="url(#badge)"/>
   <text x="255" y="46" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="800" fill="#ffffff">AI</text>

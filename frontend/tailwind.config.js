@@ -12,11 +12,12 @@ export default {
         card: "rgb(var(--c-card) / <alpha-value>)",
         line: "rgb(var(--c-line) / <alpha-value>)",
         brand: {
-          light: "#4d97ff",
-          DEFAULT: "#0a6be8",
-          dark: "#0553c0",
-          deep: "#063a87",
+          light: "#3f3f46",
+          DEFAULT: "#111111",
+          dark: "#000000",
+          deep: "#000000",
         },
+        elevated: "rgb(var(--c-elevated, var(--c-card)) / <alpha-value>)",
         navy: {
           900: "#0b1020",
           800: "#111733",
@@ -33,9 +34,9 @@ export default {
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       boxShadow: {
-        soft: "0 1px 2px rgba(15,23,42,0.04), 0 6px 20px rgba(15,23,42,0.05)",
-        lift: "0 18px 50px -12px rgba(10,107,232,0.26)",
-        glow: "0 0 0 1px rgba(10,107,232,0.18), 0 12px 40px -10px rgba(10,107,232,0.35)",
+        soft: "0 1px 2px rgba(0,0,0,0.04), 0 6px 20px rgba(0,0,0,0.05)",
+        lift: "0 16px 40px -16px rgba(0,0,0,0.18)",
+        glow: "0 0 0 1px rgba(0,0,0,0.06), 0 18px 50px -16px rgba(0,0,0,0.2)",
       },
       keyframes: {
         fadeUp: {
