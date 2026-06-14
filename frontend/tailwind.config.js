@@ -13,10 +13,11 @@ export default {
         line: "rgb(var(--c-line) / <alpha-value>)",
         brand: {
           light: "#3f3f46",
-          DEFAULT: "#111111",
-          dark: "#000000",
-          deep: "#000000",
+          DEFAULT: "rgb(var(--c-brand) / <alpha-value>)",
+          dark: "#27272a",
+          deep: "#18181b",
         },
+        accentfg: "rgb(var(--c-accent-fg) / <alpha-value>)",
         elevated: "rgb(var(--c-elevated, var(--c-card)) / <alpha-value>)",
         navy: {
           900: "#0b1020",

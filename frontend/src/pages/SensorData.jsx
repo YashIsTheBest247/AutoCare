@@ -114,7 +114,7 @@ export default function SensorData() {
           action={
             <div className="flex items-center gap-1.5">
               <button onClick={() => setAnomaliesOnly((a) => !a)}
-                className={`text-xs px-2.5 py-1 rounded-full transition-colors ${anomaliesOnly ? "bg-brand text-white" : "bg-paper text-muted hover:text-ink"}`}>
+                className={`text-xs px-2.5 py-1 rounded-full transition-colors ${anomaliesOnly ? "bg-brand text-accentfg" : "bg-paper text-muted hover:text-ink"}`}>
                 Anomalies
               </button>
               <button onClick={() => exportSensorCsv(selected ? Number(selected) : undefined)}

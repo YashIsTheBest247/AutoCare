@@ -20,12 +20,9 @@ import HealthGauge from "../components/HealthGauge.jsx";
 import RiskLevelBar from "../components/RiskLevelBar.jsx";
 import Recommendations from "../components/Recommendations.jsx";
 import FleetMap from "../components/FleetMap.jsx";
-import { Spinner, SectionTitle, formatDate } from "../components/common.jsx";
+import { Spinner, SectionTitle, formatDate, useChartTheme } from "../components/common.jsx";
 
 const RISK_COLORS = { Low: "#10b981", Medium: "#f59e0b", High: "#ef4444" };
-const TOOLTIP = { background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 10, fontSize: 12, color: "#111111" };
-const GRID = "#e5e7eb";
-const AXIS = "#a3a3a3";
 
 function buildRecommendations(alerts) {
   if (!alerts || !alerts.length) return [];
@@ -52,6 +49,8 @@ export default function Dashboard() {
   const [vehicles, setVehicles] = useState([]);
   const [error, setError] = useState(null);
   const [live, setLive] = useState(false);
+  const ct = useChartTheme();
+  const TOOLTIP = ct.tooltip, GRID = ct.grid, AXIS = ct.axis, SERIES = ct.series;
 
   const refresh = () => {
     getOverview().then(setData).catch(() => setError("Unable to load dashboard data."));
@@ -183,15 +182,15 @@ export default function Dashboard() {
             <AreaChart data={trend}>
               <defs>
                 <linearGradient id="riskArea" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#111111" stopOpacity={0.35} />
-                  <stop offset="95%" stopColor="#111111" stopOpacity={0} />
+                  <stop offset="5%" stopColor={SERIES} stopOpacity={0.35} />
+                  <stop offset="95%" stopColor={SERIES} stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
               <XAxis dataKey="time" stroke={AXIS} fontSize={11} tickMargin={8} />
               <YAxis stroke={AXIS} fontSize={11} domain={[0, 100]} />
               <Tooltip contentStyle={TOOLTIP} />
-              <Area type="monotone" dataKey="risk" stroke="#111111" strokeWidth={2} fill="url(#riskArea)" />
+              <Area type="monotone" dataKey="risk" stroke={SERIES} strokeWidth={2} fill="url(#riskArea)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

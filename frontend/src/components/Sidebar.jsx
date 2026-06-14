@@ -33,7 +33,7 @@ export default function Sidebar({ open = false, onClose = () => {} }) {
 
       <div className="border-b border-line p-3">
         <div className="flex items-center gap-2.5 rounded-xl bg-paper ring-1 ring-line px-2.5 py-2">
-          <div className="h-8 w-8 rounded-lg bg-ink text-white flex items-center justify-center text-[11px] font-bold uppercase">
+          <div className="h-8 w-8 rounded-lg bg-brand text-accentfg flex items-center justify-center text-[11px] font-bold uppercase">
             {(user?.full_name || user?.email || "?").slice(0, 2)}
           </div>
           <div className="min-w-0 flex-1">
@@ -41,7 +41,7 @@ export default function Sidebar({ open = false, onClose = () => {} }) {
             <p className="text-[10px] text-subtle truncate">{user?.email}</p>
           </div>
         </div>
-        <button onClick={signOut} className="mt-2 w-full flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wide bg-paper hover:bg-ink hover:text-white border border-line rounded-full py-2 text-muted transition-colors">
+        <button onClick={signOut} className="mt-2 w-full flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wide bg-paper hover:bg-brand hover:text-accentfg border border-line rounded-full py-2 text-muted transition-colors">
           <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
@@ -61,7 +61,7 @@ export default function Sidebar({ open = false, onClose = () => {} }) {
               className={({ isActive }) =>
                 `relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors duration-150 ${
                   isActive
-                    ? "bg-ink text-white font-semibold"
+                    ? "bg-brand text-accentfg font-semibold"
                     : "text-muted hover:bg-paper hover:text-ink"
                 }`
               }

@@ -105,7 +105,7 @@ export default function Maintenance() {
             <div className="flex gap-1.5">
               {["all", "pending", "done"].map((s) => (
                 <button key={s} onClick={() => setFilter(s)}
-                  className={`text-xs px-2.5 py-1 rounded-full capitalize transition-colors ${filter === s ? "bg-brand text-white" : "bg-paper text-muted hover:text-ink"}`}>
+                  className={`text-xs px-2.5 py-1 rounded-full capitalize transition-colors ${filter === s ? "bg-brand text-accentfg" : "bg-paper text-muted hover:text-ink"}`}>
                   {s}
                 </button>
               ))}

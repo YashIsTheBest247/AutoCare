@@ -1,3 +1,33 @@
+import { useEffect, useState } from "react";
+
+function readChartTheme() {
+  const dark = typeof document !== "undefined" && document.documentElement.classList.contains("dark");
+  return {
+    dark,
+    grid: dark ? "#2a2a2a" : "#e5e7eb",
+    axis: dark ? "#a1a1a1" : "#a3a3a3",
+    series: dark ? "#f5f5f5" : "#111111",
+    cursor: dark ? "#2a2a2a" : "#f5f5f5",
+    tooltip: {
+      background: dark ? "#1e1e1e" : "#ffffff",
+      border: `1px solid ${dark ? "#2a2a2a" : "#e5e7eb"}`,
+      borderRadius: 10,
+      fontSize: 12,
+      color: dark ? "#f5f5f5" : "#111111",
+    },
+  };
+}
+
+export function useChartTheme() {
+  const [theme, setTheme] = useState(readChartTheme);
+  useEffect(() => {
+    const observer = new MutationObserver(() => setTheme(readChartTheme()));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+  return theme;
+}
+
 export function Spinner({ label = "Loading..." }) {
   return (
     <div className="flex items-center justify-center gap-3 py-16 text-muted text-xs uppercase tracking-widest">

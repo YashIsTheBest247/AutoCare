@@ -192,7 +192,7 @@ export default function Topbar({ onMenu = () => {} }) {
             type="button"
             onClick={() => setBellOpen((o) => !o)}
             className={`relative h-10 w-10 rounded-xl border flex items-center justify-center transition-colors ${
-              bellOpen ? "bg-brand text-white border-brand" : "bg-card border-line text-muted hover:text-brand hover:border-brand/60"
+              bellOpen ? "bg-brand text-accentfg border-brand" : "bg-card border-line text-muted hover:text-brand hover:border-brand/60"
             }`}
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

@@ -48,7 +48,7 @@ export default function Select({ value, onChange, options, placeholder = "Select
                     setOpen(false);
                   }}
                   className={`w-full flex items-center justify-between gap-2 text-left px-3.5 py-2 text-sm transition-colors ${
-                    active ? "bg-brand text-white" : "text-ink hover:bg-brand/10"
+                    active ? "bg-brand text-accentfg" : "text-ink hover:bg-brand/10"
                   }`}
                 >
                   {o.label}

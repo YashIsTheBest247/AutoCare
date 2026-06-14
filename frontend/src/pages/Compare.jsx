@@ -36,7 +36,7 @@ export default function Compare() {
             const active = selected.includes(v.id);
             return (
               <button key={v.id} onClick={() => toggle(v.id)}
-                className={`px-3.5 py-2 rounded-full text-sm font-medium border transition-colors ${active ? "bg-brand text-white border-brand" : "bg-card border-line text-muted hover:border-brand/60"}`}>
+                className={`px-3.5 py-2 rounded-full text-sm font-medium border transition-colors ${active ? "bg-brand text-accentfg border-brand" : "bg-card border-line text-muted hover:border-brand/60"}`}>
                 {v.name}
               </button>
             );

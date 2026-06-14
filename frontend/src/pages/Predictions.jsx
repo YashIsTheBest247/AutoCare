@@ -181,7 +181,7 @@ export default function Predictions() {
               <div className="flex items-center gap-1.5">
                 {["all", "Low", "Medium", "High"].map((lvl) => (
                   <button key={lvl} onClick={() => setRiskFilter(lvl)}
-                    className={`text-xs px-2.5 py-1 rounded-md transition-colors ${riskFilter === lvl ? "bg-brand text-white" : "bg-elevated text-muted hover:text-ink"}`}>
+                    className={`text-xs px-2.5 py-1 rounded-md transition-colors ${riskFilter === lvl ? "bg-brand text-accentfg" : "bg-elevated text-muted hover:text-ink"}`}>
                     {lvl}
                   </button>
                 ))}

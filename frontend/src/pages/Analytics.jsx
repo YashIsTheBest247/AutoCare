@@ -12,14 +12,14 @@ import {
   Legend,
 } from "recharts";
 import { getOverview, listSensorData, getModelInfo } from "../api/client.js";
-import { Spinner, SectionTitle, formatDate } from "../components/common.jsx";
-
-const TOOLTIP = { background: "#ffffff", color: "#111111", border: "1px solid #e5e7eb", borderRadius: 12, fontSize: 12 };
+import { Spinner, SectionTitle, formatDate, useChartTheme } from "../components/common.jsx";
 
 export default function Analytics() {
   const [overview, setOverview] = useState(null);
   const [readings, setReadings] = useState(null);
   const [model, setModel] = useState(null);
+  const ct = useChartTheme();
+  const TOOLTIP = ct.tooltip, GRID = ct.grid, AXIS = ct.axis, SERIES = ct.series;
 
   useEffect(() => {
     getOverview().then(setOverview);
@@ -55,11 +55,11 @@ export default function Analytics() {
           <SectionTitle>Risk Level Distribution</SectionTitle>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={riskBars}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="name" stroke="#a3a3a3" fontSize={12} />
-              <YAxis stroke="#a3a3a3" fontSize={12} allowDecimals={false} />
-              <Tooltip contentStyle={TOOLTIP} cursor={{ fill: "#e5e7eb" }} />
-              <Bar dataKey="value" radius={[8, 8, 0, 0]} fill="#111111" />
+              <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
+              <XAxis dataKey="name" stroke={AXIS} fontSize={12} />
+              <YAxis stroke={AXIS} fontSize={12} allowDecimals={false} />
+              <Tooltip contentStyle={TOOLTIP} cursor={{ fill: ct.cursor }} />
+              <Bar dataKey="value" radius={[8, 8, 0, 0]} fill={SERIES} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -69,11 +69,11 @@ export default function Analytics() {
           {importances.length ? (
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={importances} layout="vertical" margin={{ left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis type="number" stroke="#a3a3a3" fontSize={12} unit="%" />
-                <YAxis type="category" dataKey="name" stroke="#a3a3a3" fontSize={11} width={110} />
-                <Tooltip contentStyle={TOOLTIP} cursor={{ fill: "#e5e7eb" }} />
-                <Bar dataKey="value" radius={[0, 8, 8, 0]} fill="#111111" />
+                <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
+                <XAxis type="number" stroke={AXIS} fontSize={12} unit="%" />
+                <YAxis type="category" dataKey="name" stroke={AXIS} fontSize={11} width={110} />
+                <Tooltip contentStyle={TOOLTIP} cursor={{ fill: ct.cursor }} />
+                <Bar dataKey="value" radius={[0, 8, 8, 0]} fill={SERIES} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -96,9 +96,9 @@ export default function Analytics() {
                 <stop offset="95%" stopColor="#d97706" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="time" stroke="#a3a3a3" fontSize={10} />
-            <YAxis stroke="#a3a3a3" fontSize={11} />
+            <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
+            <XAxis dataKey="time" stroke={AXIS} fontSize={10} />
+            <YAxis stroke={AXIS} fontSize={11} />
             <Tooltip contentStyle={TOOLTIP} />
             <Legend wrapperStyle={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }} />
             <Area type="monotone" dataKey="temperature" stroke="#dc2626" fill="url(#t)" strokeWidth={2} />
