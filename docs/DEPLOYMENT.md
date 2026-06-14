@@ -23,7 +23,7 @@ This writes `ml/data/sensor_dataset.csv`, `ml/models/failure_model.joblib`, and 
 ```bash
 cd ../backend
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+python -m uvicorn app.main:app --reload --port 8000
 ```
 API → http://localhost:8000 · Docs → http://localhost:8000/docs
 On first start the DB is created and seeded with 4 sample vehicles.
@@ -70,7 +70,7 @@ cd frontend && npm install && npm run build   # outputs dist/
 
 # Serve API with multiple workers
 cd ../backend
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
 ```
 Serve `frontend/dist` from any static server (nginx, Caddy) and proxy `/api` to the backend.
 
@@ -99,5 +99,6 @@ curl http://localhost:8000/api/predictions/model-info
 ```
 
 ## Notes
+- Use `python -m uvicorn ...` (not bare `uvicorn`) so the server runs under the same interpreter where you installed the dependencies — this avoids `ModuleNotFoundError` when multiple Python versions are on PATH.
 - If the model file is absent, the API automatically falls back to a deterministic heuristic scorer, so the app stays functional.
 - SQLite is single-file and zero-config; for higher write concurrency, point `DATABASE_URL` at PostgreSQL — no code changes required (SQLAlchemy handles it).

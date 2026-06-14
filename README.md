@@ -9,11 +9,13 @@ AutoCare AI monitors vehicle sensor telemetry, detects anomalies, predicts failu
 
 ## Features
 
-- **Vehicle Management** — add, list, view, and delete vehicles.
+- **Vehicle Management** — add, list, delete, and drill into a per-vehicle detail page.
 - **Sensor Monitoring** — record engine temperature, battery voltage, RPM, fuel efficiency, and vibration.
 - **Predictive Maintenance** — ML-driven failure risk score, probability, risk level (Low/Medium/High), and recommendations.
 - **Anomaly Detection** — rule-based detection of out-of-range readings with alerts.
-- **Dashboard** — fleet health score, active alerts, risk trends, prediction history, and analytics charts.
+- **Dashboard** — fleet health gauge, risk-level bar, AI recommendations, risk distribution, and trend charts.
+- **Live Fleet Map** — interactive map (Leaflet + OpenStreetMap, no API key) with risk-colored vehicle pins and detail popups.
+- **Global Search & Notifications** — top-bar search across vehicles/pages and a live notifications panel of active alerts.
 - **Edge-first** — sub-millisecond CPU inference with a graceful heuristic fallback if the model is unavailable.
 
 ---
@@ -22,7 +24,7 @@ AutoCare AI monitors vehicle sensor telemetry, detects anomalies, predicts failu
 
 | Layer | Technologies |
 |-------|--------------|
-| Frontend | React, JavaScript, Vite, Tailwind CSS, React Router, Recharts, Axios |
+| Frontend | React, JavaScript, Vite, Tailwind CSS, React Router, Recharts, Axios, Leaflet / React-Leaflet (OpenStreetMap) |
 | Backend | FastAPI, Python, SQLAlchemy, SQLite, Pydantic |
 | Machine Learning | Scikit-learn, Pandas, NumPy, Joblib |
 | Deployment | Docker, Docker Compose, Nginx |
@@ -43,7 +45,7 @@ python train_model.py
 # 2. Backend
 cd ../backend
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+python -m uvicorn app.main:app --reload --port 8000
 
 # 3. Frontend
 cd ../frontend
@@ -106,9 +108,9 @@ autocare/
 │   └── app/
 │       ├── main.py           # App entrypoint, CORS, lifespan, error handler
 │       ├── config.py         # Settings (env-driven)
-│       ├── database.py       # Engine, session, Base, init_db
-│       ├── seed.py           # Seeds sample vehicles + readings on first run
-│       ├── models/           # SQLAlchemy ORM models
+│       ├── database.py       # Engine, session, Base, init_db + SQLite migration
+│       ├── seed.py           # Seeds sample vehicles/readings + geo backfill
+│       ├── models/           # SQLAlchemy ORM models (vehicle incl. lat/lng)
 │       ├── schemas/          # Pydantic request/response schemas
 │       ├── crud/             # Database operations
 │       ├── services/         # Business logic (prediction, anomaly, dashboard)
@@ -128,8 +130,9 @@ autocare/
         ├── App.jsx           # Routes + layout
         ├── index.css         # Tailwind + component classes
         ├── api/client.js     # Axios API client
-        ├── components/       # Sidebar, Topbar, KPI cards, charts helpers
-        └── pages/            # Dashboard, Vehicles, SensorData, Predictions, Analytics
+        ├── components/       # Logo, Sidebar, Topbar, KpiCard, HealthGauge, RiskLevelBar,
+        │                     #   RiskBadge, Recommendations, FleetMap, Select, AlertList, ...
+        └── pages/            # Dashboard, Vehicles, VehicleDetail, SensorData, Predictions, Analytics
 ```
 
 ---
@@ -150,7 +153,6 @@ autocare/
 | `DATABASE.md` | Mermaid ER diagram and full table/column reference. |
 | `API.md` | Endpoint-by-endpoint REST API documentation with examples. |
 | `DEPLOYMENT.md` | Local, Docker, and edge deployment instructions + env vars. |
-| `PRESENTATION.md` | Hackathon presentation content, future scope, and Q&A prep. |
 
 ### `ml/` — Machine Learning
 | File | Purpose |
@@ -174,13 +176,13 @@ autocare/
 |------|---------|
 | `main.py` | Creates the FastAPI app, configures CORS, registers routers, global exception handler, and a `lifespan` that initializes + seeds the DB. |
 | `config.py` | Pydantic `Settings` reading env vars (DB URL, model paths, CORS origins). |
-| `database.py` | SQLAlchemy engine, `SessionLocal`, declarative `Base`, `get_db` dependency, `init_db`. |
-| `seed.py` | Populates 4 sample vehicles with sensor readings and predictions on first run. |
+| `database.py` | SQLAlchemy engine, `SessionLocal`, declarative `Base`, `get_db`, `init_db`, and a lightweight SQLite column migration (`_ensure_columns`). |
+| `seed.py` | Seeds 4 sample vehicles (with New Delhi coordinates), readings, and predictions on first run; `backfill_locations()` assigns/relocates coordinates so every vehicle appears on the map. |
 
 #### `backend/app/models/` — ORM
 | File | Purpose |
 |------|---------|
-| `vehicle.py` | `Vehicle` table + relationships to readings and predictions. |
+| `vehicle.py` | `Vehicle` table (incl. `latitude`/`longitude`) + relationships to readings and predictions. |
 | `sensor_data.py` | `SensorData` table (the five sensor features + timestamp). |
 | `prediction.py` | `Prediction` table (risk score/level, probability, recommendation). |
 | `__init__.py` | Re-exports the models for easy importing. |
@@ -188,7 +190,7 @@ autocare/
 #### `backend/app/schemas/` — Pydantic
 | File | Purpose |
 |------|---------|
-| `vehicle.py` | `VehicleCreate`, `VehicleRead`, `VehicleDetail` (with health summary). |
+| `vehicle.py` | `VehicleCreate`, `VehicleRead`, `VehicleDetail` (health summary + lat/lng). |
 | `sensor_data.py` | `SensorDataCreate`, `SensorDataRead` (with anomalies), validated ranges. |
 | `prediction.py` | `PredictionInput`, `PredictionResult`, `PredictionRead`. |
 | `__init__.py` | Aggregates schema exports. |
@@ -230,7 +232,7 @@ autocare/
 | `nginx.conf` | Serves the SPA and proxies `/api` to the backend container. |
 | `package.json` | Scripts and dependencies. |
 | `vite.config.js` | Dev server config + `/api` proxy to port 8000. |
-| `tailwind.config.js` | Automotive dark theme (brand, surface, risk colors). |
+| `tailwind.config.js` | Blue automotive light theme (brand, risk colors, animations). |
 | `postcss.config.js` | Tailwind/Autoprefixer pipeline. |
 | `index.html` | App shell + font preload. |
 
@@ -245,19 +247,26 @@ autocare/
 #### `frontend/src/components/`
 | File | Purpose |
 |------|---------|
-| `Layout.jsx` | Sidebar + Topbar + main content shell. |
-| `Sidebar.jsx` | Navigation with active-route highlighting. |
-| `Topbar.jsx` | Page title + edge-status indicator. |
-| `KpiCard.jsx` | Reusable KPI metric card. |
+| `Layout.jsx` | Sidebar + Topbar + animated main content shell. |
+| `Logo.jsx` | Gradient "AutoCare" mark + wordmark (animated heartbeat). |
+| `Sidebar.jsx` | Blue gradient nav with active-route highlighting. |
+| `Topbar.jsx` | Page title, global search dropdown, and notifications bell. |
+| `KpiCard.jsx` | Reusable KPI metric card (staggered entrance). |
+| `HealthGauge.jsx` | Circular SVG health-score gauge (color by score). |
+| `RiskLevelBar.jsx` | Gradient Low→High risk bar with marker. |
 | `RiskBadge.jsx` | Color-coded Low/Medium/High badge. |
+| `Recommendations.jsx` | AI maintenance recommendation list. |
+| `FleetMap.jsx` | Leaflet/OpenStreetMap map with risk-colored vehicle pins. |
+| `Select.jsx` | Custom themed dropdown (replaces native `<select>`). |
 | `AlertList.jsx` | Renders active anomaly/risk alerts. |
 | `common.jsx` | Shared `Spinner`, `EmptyState`, `SectionTitle`, and `formatDate`. |
 
 #### `frontend/src/pages/`
 | File | Purpose |
 |------|---------|
-| `Dashboard.jsx` | KPIs, risk trend line chart, risk distribution pie, active alerts. |
-| `Vehicles.jsx` | Add vehicle form + fleet table with health/risk. |
+| `Dashboard.jsx` | Health gauge, risk bar, AI recommendations, live fleet map, distribution + trend charts. |
+| `Vehicles.jsx` | Add vehicle form + fleet table (links to detail). |
+| `VehicleDetail.jsx` | Per-vehicle health gauge, latest reading, telemetry chart, location map, prediction history. |
 | `SensorData.jsx` | Record readings (auto-prediction) + recent readings table with anomaly status. |
 | `Predictions.jsx` | Run/save predictions, result card, and prediction history. |
 | `Analytics.jsx` | Risk distribution, model feature importance, telemetry trends, model info. |
