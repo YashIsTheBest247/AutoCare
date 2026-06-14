@@ -1,5 +1,8 @@
+import csv
+import io
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app import crud
@@ -29,6 +32,26 @@ def list_predictions(vehicle_id: Optional[int] = None, limit: int = 100, db: Ses
     if vehicle_id is not None:
         return crud.prediction.list_for_vehicle(db, vehicle_id, limit=limit)
     return crud.prediction.list_all(db, limit=limit)
+
+
+@router.get("/export")
+def export_predictions(vehicle_id: Optional[int] = None, db: Session = Depends(get_db)):
+    if vehicle_id is not None:
+        rows = crud.prediction.list_for_vehicle(db, vehicle_id, limit=10000)
+    else:
+        rows = crud.prediction.list_all(db, limit=10000)
+    buffer = io.StringIO()
+    writer = csv.writer(buffer)
+    writer.writerow(["id", "vehicle_id", "risk_score", "risk_level", "failure_probability", "recommendation", "created_at"])
+    for p in rows:
+        writer.writerow([p.id, p.vehicle_id, p.risk_score, p.risk_level, p.failure_probability,
+                         p.recommendation, p.created_at.isoformat()])
+    buffer.seek(0)
+    return StreamingResponse(
+        iter([buffer.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=predictions.csv"},
+    )
 
 
 @router.get("/model-info")

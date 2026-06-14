@@ -4,7 +4,14 @@ from app.schemas.prediction import (
     PredictionRead,
     PredictionInput,
     PredictionResult,
+    FeatureContribution,
 )
+from app.schemas.maintenance import (
+    MaintenanceCreate,
+    MaintenanceUpdate,
+    MaintenanceRead,
+)
+from app.schemas.settings import ThresholdsUpdate, AlertConfig, EmailTest
 
 __all__ = [
     "VehicleCreate",
@@ -15,4 +22,11 @@ __all__ = [
     "PredictionRead",
     "PredictionInput",
     "PredictionResult",
+    "FeatureContribution",
+    "MaintenanceCreate",
+    "MaintenanceUpdate",
+    "MaintenanceRead",
+    "ThresholdsUpdate",
+    "AlertConfig",
+    "EmailTest",
 ]

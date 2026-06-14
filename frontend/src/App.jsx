@@ -6,6 +6,9 @@ import VehicleDetail from "./pages/VehicleDetail.jsx";
 import SensorData from "./pages/SensorData.jsx";
 import Predictions from "./pages/Predictions.jsx";
 import Analytics from "./pages/Analytics.jsx";
+import Maintenance from "./pages/Maintenance.jsx";
+import Compare from "./pages/Compare.jsx";
+import Settings from "./pages/Settings.jsx";
 
 export default function App() {
   return (
@@ -17,6 +20,9 @@ export default function App() {
         <Route path="/sensor-data" element={<SensorData />} />
         <Route path="/predictions" element={<Predictions />} />
         <Route path="/analytics" element={<Analytics />} />
+        <Route path="/maintenance" element={<Maintenance />} />
+        <Route path="/compare" element={<Compare />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </Layout>
   );

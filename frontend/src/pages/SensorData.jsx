@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { listVehicles, listSensorData, createSensorData } from "../api/client.js";
+import { useEffect, useRef, useState } from "react";
+import { listVehicles, listSensorData, createSensorData, importSensorCsv, sensorExportUrl } from "../api/client.js";
 import Select from "../components/Select.jsx";
 import { Spinner, EmptyState, SectionTitle, formatDate } from "../components/common.jsx";
 
@@ -19,6 +19,9 @@ export default function SensorData() {
   const [readings, setReadings] = useState(null);
   const [form, setForm] = useState(empty);
   const [saving, setSaving] = useState(false);
+  const [anomaliesOnly, setAnomaliesOnly] = useState(false);
+  const [importMsg, setImportMsg] = useState("");
+  const fileRef = useRef(null);
 
   useEffect(() => {
     listVehicles().then((v) => {
@@ -45,6 +48,25 @@ export default function SensorData() {
       setSaving(false);
     }
   };
+
+  const onImport = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImportMsg("Importing...");
+    try {
+      const res = await importSensorCsv(file);
+      setImportMsg(`Imported ${res.imported} rows${res.errors.length ? `, ${res.errors.length} skipped` : ""}.`);
+      await load();
+    } catch {
+      setImportMsg("Import failed.");
+    }
+    if (fileRef.current) fileRef.current.value = "";
+    setTimeout(() => setImportMsg(""), 4000);
+  };
+
+  const shown = readings
+    ? readings.filter((r) => !anomaliesOnly || (r.anomalies && r.anomalies.length))
+    : null;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -75,11 +97,28 @@ export default function SensorData() {
       </div>
 
       <div className="card p-5 lg:col-span-2">
-        <SectionTitle>Recent Readings</SectionTitle>
-        {!readings ? (
+        <SectionTitle
+          action={
+            <div className="flex items-center gap-1.5">
+              <button onClick={() => setAnomaliesOnly((a) => !a)}
+                className={`text-xs px-2.5 py-1 rounded-full transition-colors ${anomaliesOnly ? "bg-brand text-white" : "bg-paper text-muted hover:text-ink"}`}>
+                Anomalies
+              </button>
+              <a href={sensorExportUrl(selected ? Number(selected) : undefined)}
+                className="text-xs px-2.5 py-1 rounded-full bg-paper text-muted hover:text-ink">Export CSV</a>
+              <button onClick={() => fileRef.current && fileRef.current.click()}
+                className="text-xs px-2.5 py-1 rounded-full bg-paper text-muted hover:text-ink">Import CSV</button>
+              <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={onImport} />
+            </div>
+          }
+        >
+          Recent Readings
+        </SectionTitle>
+        {importMsg && <p className="text-xs text-brand mb-2">{importMsg}</p>}
+        {!shown ? (
           <Spinner />
-        ) : readings.length === 0 ? (
-          <EmptyState title="No readings yet" hint="Submit a sensor reading to begin monitoring." />
+        ) : shown.length === 0 ? (
+          <EmptyState title="No readings" hint="Submit a sensor reading or clear the anomalies filter." />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -95,8 +134,8 @@ export default function SensorData() {
                 </tr>
               </thead>
               <tbody>
-                {readings.map((r) => (
-                  <tr key={r.id} className="border-b border-line/70 hover:bg-neutral-50">
+                {shown.map((r) => (
+                  <tr key={r.id} className="border-b border-line/70 hover:bg-paper">
                     <td className="py-2.5 pr-3 text-subtle text-[11px] whitespace-nowrap">{formatDate(r.timestamp)}</td>
                     <td className="py-2.5 pr-3 text-ink">{r.temperature}</td>
                     <td className="py-2.5 pr-3 text-ink">{r.battery_voltage}</td>

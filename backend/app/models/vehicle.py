@@ -22,3 +22,6 @@ class Vehicle(Base):
     predictions = relationship(
         "Prediction", back_populates="vehicle", cascade="all, delete-orphan"
     )
+    maintenance_tasks = relationship(
+        "MaintenanceTask", back_populates="vehicle", cascade="all, delete-orphan"
+    )

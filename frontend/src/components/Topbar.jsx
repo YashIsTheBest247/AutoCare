@@ -30,9 +30,17 @@ export default function Topbar() {
   const [bellOpen, setBellOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
   const bellRef = useRef(null);
   const searchRef = useRef(null);
+
+  const toggleTheme = () => {
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  };
 
   useEffect(() => {
     getOverview().then((d) => setAlerts(d.active_alerts || [])).catch(() => setAlerts([]));
@@ -145,6 +153,24 @@ export default function Topbar() {
             </div>
           )}
         </div>
+
+        <button
+          type="button"
+          onClick={toggleTheme}
+          title="Toggle theme"
+          className="h-10 w-10 rounded-xl border border-line bg-card flex items-center justify-center text-muted hover:text-brand hover:border-brand/60 transition-colors"
+        >
+          {dark ? (
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="4" />
+              <path strokeLinecap="round" d="M12 2v2m0 16v2M4 12H2m20 0h-2m-2.5-5.5l1.5-1.5M6 18l-1.5 1.5M6 6L4.5 4.5M18 18l1.5 1.5" />
+            </svg>
+          ) : (
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" />
+            </svg>
+          )}
+        </button>
 
         <div className="relative" ref={bellRef}>
           <button

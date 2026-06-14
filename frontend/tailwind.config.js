@@ -1,15 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        ink: "#0f172a",
-        muted: "#64748b",
-        subtle: "#94a3b8",
-        paper: "#eef2f7",
-        card: "#ffffff",
-        line: "#e2e8f0",
+        ink: "rgb(var(--c-ink) / <alpha-value>)",
+        muted: "rgb(var(--c-muted) / <alpha-value>)",
+        subtle: "rgb(var(--c-subtle) / <alpha-value>)",
+        paper: "rgb(var(--c-paper) / <alpha-value>)",
+        card: "rgb(var(--c-card) / <alpha-value>)",
+        line: "rgb(var(--c-line) / <alpha-value>)",
         brand: {
           light: "#3b82f6",
           DEFAULT: "#2563eb",

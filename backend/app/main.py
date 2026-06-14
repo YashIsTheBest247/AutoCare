@@ -7,6 +7,7 @@ from app.config import settings
 from app.database import init_db
 from app.routes import api_router
 from app.seed import seed, backfill_locations
+from app.services import settings_service
 
 
 @asynccontextmanager
@@ -14,6 +15,7 @@ async def lifespan(app: FastAPI):
     init_db()
     seed()
     backfill_locations()
+    settings_service.load_into_runtime()
     yield
 
 

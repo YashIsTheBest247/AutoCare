@@ -7,6 +7,9 @@ const links = [
   { to: "/sensor-data", label: "Sensor Data", icon: "M3 12h4l3 8 4-16 3 8h4" },
   { to: "/predictions", label: "Predictions", icon: "M13 2L3 14h7l-1 8 10-12h-7l1-8z" },
   { to: "/analytics", label: "Analytics", icon: "M4 19V5m0 14h16M8 17V9m4 8V6m4 11v-5" },
+  { to: "/maintenance", label: "Maintenance", icon: "M14.7 6.3a4 4 0 01-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 015.4-5.4l-2.5 2.5-2-2 2.5-2.5z" },
+  { to: "/compare", label: "Compare", icon: "M9 3v18M15 3v18M4 7h5M4 12h5M4 17h5M15 9h5M15 14h5" },
+  { to: "/settings", label: "Settings", icon: "M10.3 3.3a1 1 0 011.4 0l1 .9 1.3-.3a1 1 0 011.2.7l.4 1.3 1.2.6a1 1 0 01.5 1.3l-.5 1.2.5 1.2a1 1 0 01-.5 1.3l-1.2.6-.4 1.3a1 1 0 01-1.2.7l-1.3-.3-1 .9a1 1 0 01-1.4 0l-1-.9-1.3.3a1 1 0 01-1.2-.7l-.4-1.3-1.2-.6a1 1 0 01-.5-1.3l.5-1.2-.5-1.2a1 1 0 01.5-1.3l1.2-.6.4-1.3a1 1 0 011.2-.7l1.3.3 1-.9zM12 15a3 3 0 100-6 3 3 0 000 6z" },
 ];
 
 export default function Sidebar() {

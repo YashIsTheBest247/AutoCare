@@ -3,8 +3,24 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --c-ink: 15 23 42;
+    --c-muted: 100 116 139;
+    --c-subtle: 148 163 184;
+    --c-paper: 238 242 247;
+    --c-card: 255 255 255;
+    --c-line: 226 232 240;
+  }
+  .dark {
+    --c-ink: 226 232 240;
+    --c-muted: 148 163 184;
+    --c-subtle: 100 116 139;
+    --c-paper: 15 23 42;
+    --c-card: 30 41 59;
+    --c-line: 51 65 85;
+  }
   body {
-    @apply bg-paper text-ink antialiased;
+    @apply bg-paper text-ink antialiased transition-colors;
   }
   @media (prefers-reduced-motion: reduce) {
     *,

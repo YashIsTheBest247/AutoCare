@@ -16,6 +16,15 @@ AutoCare AI monitors vehicle sensor telemetry, detects anomalies, predicts failu
 - **Dashboard** — fleet health gauge, risk-level bar, AI recommendations, risk distribution, and trend charts.
 - **Live Fleet Map** — interactive map (Leaflet + OpenStreetMap, no API key) with risk-colored vehicle pins and detail popups.
 - **Global Search & Notifications** — top-bar search across vehicles/pages and a live notifications panel of active alerts.
+- **Live Telemetry Simulation** — a dashboard "Live Feed" toggle that streams synthetic readings so the UI updates in real time.
+- **Explainability** — per-prediction feature contributions ("why this score"), component-level health (engine/battery/cooling/drivetrain/economy), and Remaining Useful Life (RUL) estimate.
+- **Forecasting** — projects upcoming sensor trends and warns before a value crosses a danger limit.
+- **Maintenance Scheduler** — create/track/complete service tasks per vehicle with priorities.
+- **Configurable Thresholds** — tune anomaly ranges per sensor from a Settings page (persisted).
+- **Email Alerts** — optional SMTP email on new high-risk readings (configurable recipient & severity).
+- **Vehicle Comparison** — compare health, RUL, and component breakdown across up to 3 vehicles.
+- **CSV Import/Export** — bulk-import sensor readings and export readings/predictions.
+- **Dark Mode** — light/dark theme toggle (persisted).
 - **Edge-first** — sub-millisecond CPU inference with a graceful heuristic fallback if the model is unavailable.
 
 ---
@@ -264,10 +273,13 @@ autocare/
 #### `frontend/src/pages/`
 | File | Purpose |
 |------|---------|
-| `Dashboard.jsx` | Health gauge, risk bar, AI recommendations, live fleet map, distribution + trend charts. |
-| `Vehicles.jsx` | Add vehicle form + fleet table (links to detail). |
-| `VehicleDetail.jsx` | Per-vehicle health gauge, latest reading, telemetry chart, location map, prediction history. |
-| `SensorData.jsx` | Record readings (auto-prediction) + recent readings table with anomaly status. |
+| `Dashboard.jsx` | Health gauge, risk bar, AI recommendations, live fleet map, live-feed toggle, charts. |
+| `Vehicles.jsx` | Add vehicle form + searchable/sortable fleet table (links to detail). |
+| `VehicleDetail.jsx` | Health gauge, latest reading, telemetry chart, component health, risk factors, forecast, map, history. |
+| `SensorData.jsx` | Record readings (auto-prediction) + table with anomaly filter and CSV import/export. |
+| `Maintenance.jsx` | Schedule, track, complete, and delete maintenance tasks. |
+| `Compare.jsx` | Side-by-side comparison of up to 3 vehicles (health, RUL, components). |
+| `Settings.jsx` | Configure anomaly thresholds and email alert settings. |
 | `Predictions.jsx` | Run/save predictions, result card, and prediction history. |
 | `Analytics.jsx` | Risk distribution, model feature importance, telemetry trends, model info. |
 
@@ -284,6 +296,13 @@ autocare/
 | GET | `/api/predictions` | Prediction history |
 | GET | `/api/predictions/model-info` | Model metrics & metadata |
 | GET | `/api/dashboard/overview` | Aggregated dashboard KPIs |
+| GET | `/api/analytics/vehicles/{id}` | Component health, contributions, RUL, forecast |
+| GET/POST/PATCH/DELETE | `/api/maintenance` | Maintenance task CRUD |
+| GET/PUT | `/api/settings/thresholds` | Get / update anomaly thresholds |
+| GET/PUT | `/api/settings/alerts` | Get / update email alert config |
+| POST | `/api/settings/email/test` | Send a test alert email |
+| GET | `/api/sensor-data/export` · `/api/predictions/export` | CSV export |
+| POST | `/api/sensor-data/import` | CSV import of readings |
 
 Full details in [docs/API.md](docs/API.md).
 

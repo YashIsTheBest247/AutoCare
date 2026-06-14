@@ -14,7 +14,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
-import { getOverview, listVehicles } from "../api/client.js";
+import { getOverview, listVehicles, createSensorData } from "../api/client.js";
 import KpiCard from "../components/KpiCard.jsx";
 import HealthGauge from "../components/HealthGauge.jsx";
 import RiskLevelBar from "../components/RiskLevelBar.jsx";
@@ -37,15 +37,38 @@ function buildRecommendations(alerts) {
   }));
 }
 
+function randomReading() {
+  const degraded = Math.random() > 0.6;
+  const r = (min, max) => Math.round((min + Math.random() * (max - min)) * 100) / 100;
+  return degraded
+    ? { temperature: r(106, 132), battery_voltage: r(11, 12.5), rpm: r(3300, 5200), fuel_efficiency: r(6, 11), vibration: r(1.9, 4.2) }
+    : { temperature: r(82, 100), battery_voltage: r(13.2, 14.3), rpm: r(1600, 2900), fuel_efficiency: r(14, 20), vibration: r(0.5, 1.4) };
+}
+
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [vehicles, setVehicles] = useState([]);
   const [error, setError] = useState(null);
+  const [live, setLive] = useState(false);
 
-  useEffect(() => {
+  const refresh = () => {
     getOverview().then(setData).catch(() => setError("Unable to load dashboard data."));
     listVehicles().then(setVehicles).catch(() => setVehicles([]));
-  }, []);
+  };
+
+  useEffect(() => { refresh(); }, []);
+
+  useEffect(() => {
+    if (!live || vehicles.length === 0) return;
+    const id = setInterval(async () => {
+      const v = vehicles[Math.floor(Math.random() * vehicles.length)];
+      try {
+        await createSensorData({ vehicle_id: v.id, ...randomReading() });
+        refresh();
+      } catch (e) {}
+    }, 4000);
+    return () => clearInterval(id);
+  }, [live, vehicles]);
 
   if (error) return <div className="card p-6 text-risk-high">{error}</div>;
   if (!data) return <Spinner label="Loading dashboard..." />;
@@ -57,6 +80,28 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-sm text-muted">Fleet overview · {vehicles.length} vehicles</p>
+        <button
+          onClick={() => setLive((l) => !l)}
+          className={live ? "btn-primary" : "btn-pill"}
+        >
+          {live ? (
+            <>
+              <span className="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+              Live Feed On — Stop
+            </>
+          ) : (
+            <>
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z" />
+              </svg>
+              Start Live Feed
+            </>
+          )}
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard label="Vehicles" value={data.total_vehicles} sub="Monitored fleet" accent="blue" delay={0}
           icon="M5 11l1.5-4.5h11L19 11m-14 0h14m-14 0v6m14-6v6M7 17h2m6 0h2" />

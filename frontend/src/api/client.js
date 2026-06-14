@@ -28,4 +28,38 @@ export const predictForVehicle = (id, payload) =>
   api.post(`/api/predictions/vehicles/${id}`, payload).then((r) => r.data);
 export const getModelInfo = () => api.get("/api/predictions/model-info").then((r) => r.data);
 
+export const getVehicleAnalytics = (id) =>
+  api.get(`/api/analytics/vehicles/${id}`).then((r) => r.data);
+
+export const listMaintenance = (params = {}) =>
+  api.get("/api/maintenance", { params }).then((r) => r.data);
+export const createMaintenance = (payload) =>
+  api.post("/api/maintenance", payload).then((r) => r.data);
+export const updateMaintenance = (id, payload) =>
+  api.patch(`/api/maintenance/${id}`, payload).then((r) => r.data);
+export const deleteMaintenance = (id) => api.delete(`/api/maintenance/${id}`);
+
+export const getThresholds = () => api.get("/api/settings/thresholds").then((r) => r.data);
+export const updateThresholds = (thresholds) =>
+  api.put("/api/settings/thresholds", { thresholds }).then((r) => r.data);
+export const resetThresholds = () =>
+  api.post("/api/settings/thresholds/reset").then((r) => r.data);
+
+export const getAlertConfig = () => api.get("/api/settings/alerts").then((r) => r.data);
+export const updateAlertConfig = (payload) =>
+  api.put("/api/settings/alerts", payload).then((r) => r.data);
+export const getEmailStatus = () => api.get("/api/settings/email/status").then((r) => r.data);
+export const sendTestEmail = (recipient) =>
+  api.post("/api/settings/email/test", { recipient }).then((r) => r.data);
+
+export const importSensorCsv = (file) => {
+  const form = new FormData();
+  form.append("file", file);
+  return api.post("/api/sensor-data/import", form).then((r) => r.data);
+};
+export const sensorExportUrl = (vehicleId) =>
+  `${baseURL}/api/sensor-data/export${vehicleId ? `?vehicle_id=${vehicleId}` : ""}`;
+export const predictionExportUrl = (vehicleId) =>
+  `${baseURL}/api/predictions/export${vehicleId ? `?vehicle_id=${vehicleId}` : ""}`;
+
 export default api;

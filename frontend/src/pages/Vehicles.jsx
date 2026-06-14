@@ -11,6 +11,8 @@ export default function Vehicles() {
   const [vehicles, setVehicles] = useState(null);
   const [form, setForm] = useState({ name: "", model: "", type: "car" });
   const [saving, setSaving] = useState(false);
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState({ key: "name", dir: 1 });
 
   const load = () => listVehicles().then(setVehicles);
   useEffect(() => { load(); }, []);
@@ -32,6 +34,28 @@ export default function Vehicles() {
     await deleteVehicle(id);
     load();
   };
+
+  const RANK = { Low: 1, Medium: 2, High: 3 };
+  const toggleSort = (key) =>
+    setSort((s) => ({ key, dir: s.key === key ? -s.dir : 1 }));
+
+  const display = (() => {
+    if (!vehicles) return null;
+    const q = query.trim().toLowerCase();
+    let list = q
+      ? vehicles.filter((v) => [v.name, v.model, v.type].some((s) => (s || "").toLowerCase().includes(q)))
+      : [...vehicles];
+    list.sort((a, b) => {
+      let av, bv;
+      if (sort.key === "health") { av = a.health_score; bv = b.health_score; }
+      else if (sort.key === "risk") { av = RANK[a.latest_risk_level] || 0; bv = RANK[b.latest_risk_level] || 0; }
+      else { av = (a.name || "").toLowerCase(); bv = (b.name || "").toLowerCase(); }
+      return av < bv ? -sort.dir : av > bv ? sort.dir : 0;
+    });
+    return list;
+  })();
+
+  const sortArrow = (key) => (sort.key === key ? (sort.dir === 1 ? " ↑" : " ↓") : "");
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -63,27 +87,34 @@ export default function Vehicles() {
       </div>
 
       <div className="card p-5 lg:col-span-2">
-        <SectionTitle>Fleet ({vehicles ? vehicles.length : 0})</SectionTitle>
-        {!vehicles ? (
+        <SectionTitle
+          action={
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Filter fleet..."
+              className="text-xs bg-paper border border-line rounded-full px-3 py-1.5 w-40 focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          }
+        >
+          Fleet ({display ? display.length : 0})
+        </SectionTitle>
+        {!display ? (
           <Spinner />
-        ) : vehicles.length === 0 ? (
-          <EmptyState title="No vehicles yet" hint="Add your first vehicle to start monitoring." />
+        ) : display.length === 0 ? (
+          <EmptyState title="No vehicles" hint="Add a vehicle or clear the filter." />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-[10px] uppercase tracking-widest text-subtle border-b border-line">
-                  <th className="py-2 pr-4 font-semibold">Name</th>
+                  <th className="py-2 pr-4 font-semibold cursor-pointer select-none hover:text-ink" onClick={() => toggleSort("name")}>Name{sortArrow("name")}</th>
                   <th className="py-2 pr-4 font-semibold">Model</th>
                   <th className="py-2 pr-4 font-semibold">Type</th>
-                  <th className="py-2 pr-4 font-semibold">Health</th>
-                  <th className="py-2 pr-4 font-semibold">Risk</th>
+                  <th className="py-2 pr-4 font-semibold cursor-pointer select-none hover:text-ink" onClick={() => toggleSort("health")}>Health{sortArrow("health")}</th>
+                  <th className="py-2 pr-4 font-semibold cursor-pointer select-none hover:text-ink" onClick={() => toggleSort("risk")}>Risk{sortArrow("risk")}</th>
                   <th className="py-2 pr-4 font-semibold">Added</th>
                   <th className="py-2"></th>
                 </tr>
               </thead>
               <tbody>
-                {vehicles.map((v) => (
+                {display.map((v) => (
                   <tr key={v.id} className="border-b border-line/70 hover:bg-slate-50">
                     <td className="py-3 pr-4">
                       <Link to={`/vehicles/${v.id}`} className="font-bold text-ink hover:text-brand transition-colors">{v.name}</Link>

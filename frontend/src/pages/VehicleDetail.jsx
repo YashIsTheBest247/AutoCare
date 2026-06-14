@@ -4,16 +4,19 @@ import {
   ResponsiveContainer,
   AreaChart,
   Area,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
   Legend,
 } from "recharts";
-import { getVehicle, listSensorData, listPredictions } from "../api/client.js";
+import { getVehicle, listSensorData, listPredictions, getVehicleAnalytics } from "../api/client.js";
 import HealthGauge from "../components/HealthGauge.jsx";
 import RiskBadge from "../components/RiskBadge.jsx";
 import FleetMap from "../components/FleetMap.jsx";
+import { ComponentHealthBars, ContributionBars } from "../components/Meters.jsx";
 import { Spinner, EmptyState, SectionTitle, formatDate } from "../components/common.jsx";
 
 const TOOLTIP = { background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 12, fontSize: 12, boxShadow: "0 8px 24px rgba(15,23,42,0.08)" };
@@ -31,6 +34,7 @@ export default function VehicleDetail() {
   const [vehicle, setVehicle] = useState(null);
   const [readings, setReadings] = useState([]);
   const [predictions, setPredictions] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -39,6 +43,7 @@ export default function VehicleDetail() {
     getVehicle(id).then(setVehicle).catch(() => setError("Vehicle not found."));
     listSensorData(id).then(setReadings).catch(() => setReadings([]));
     listPredictions(id).then(setPredictions).catch(() => setPredictions([]));
+    getVehicleAnalytics(id).then(setAnalytics).catch(() => setAnalytics(null));
   }, [id]);
 
   if (error) {
@@ -57,6 +62,15 @@ export default function VehicleDetail() {
     temperature: r.temperature,
     vibration: r.vibration * 20,
   }));
+
+  const fc = analytics && analytics.forecast ? analytics.forecast : null;
+  const forecastData = fc && fc.series && fc.series.temperature
+    ? fc.series.temperature.map((t, i) => ({
+        step: `+${i + 1}`,
+        temperature: t,
+        vibration: fc.series.vibration ? fc.series.vibration[i] : null,
+      }))
+    : [];
 
   return (
     <div className="space-y-6">
@@ -144,6 +158,55 @@ export default function VehicleDetail() {
           <FleetMap vehicles={[vehicle]} />
         </div>
       </div>
+
+      {analytics && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="card p-6">
+            <SectionTitle
+              action={analytics.rul_days != null && (
+                <span className="text-xs font-bold text-brand">{analytics.rul_days}d RUL</span>
+              )}
+            >
+              Component Health
+            </SectionTitle>
+            <ComponentHealthBars data={analytics.component_health} />
+          </div>
+
+          <div className="card p-6">
+            <SectionTitle>Risk Factors</SectionTitle>
+            <ContributionBars items={analytics.contributions} />
+          </div>
+
+          <div className="card p-6">
+            <SectionTitle>Forecast (next readings)</SectionTitle>
+            {forecastData.length === 0 ? (
+              <EmptyState title="Not enough data" hint="Record more readings to forecast." />
+            ) : (
+              <>
+                <ResponsiveContainer width="100%" height={180}>
+                  <LineChart data={forecastData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="step" stroke="#94a3b8" fontSize={11} />
+                    <YAxis stroke="#94a3b8" fontSize={11} />
+                    <Tooltip contentStyle={TOOLTIP} />
+                    <Line type="monotone" dataKey="temperature" stroke="#ef4444" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="vibration" stroke="#f59e0b" strokeWidth={2} dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+                {fc.warnings && fc.warnings.length > 0 && (
+                  <ul className="mt-3 space-y-1">
+                    {fc.warnings.map((w, i) => (
+                      <li key={i} className="text-xs text-risk-high flex items-start gap-1.5">
+                        <span>⚠</span><span>{w}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="card p-6">
         <SectionTitle>Prediction History</SectionTitle>

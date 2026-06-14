@@ -1,6 +1,6 @@
 from app.ml.model import get_model
 from app.schemas import PredictionResult
-from app.services import anomaly_service
+from app.services import anomaly_service, analytics_service
 
 RECOMMENDATIONS = {
     "Low": "Vehicle operating within healthy parameters. Continue routine maintenance schedule.",
@@ -32,10 +32,14 @@ def evaluate(features: dict) -> PredictionResult:
     probability = model.predict_probability(features)
     anomalies = anomaly_service.detect(features)
     level = _level(probability)
+    risk_score = round(probability * 100, 2)
     return PredictionResult(
-        risk_score=round(probability * 100, 2),
+        risk_score=risk_score,
         risk_level=level,
         failure_probability=round(probability, 4),
         recommendation=_recommendation(level, anomalies),
         anomalies=anomalies,
+        rul_days=analytics_service.remaining_useful_life(risk_score),
+        component_health=analytics_service.component_health(features),
+        contributions=analytics_service.feature_contributions(features),
     )

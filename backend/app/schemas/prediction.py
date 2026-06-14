@@ -11,12 +11,20 @@ class PredictionInput(BaseModel):
     vibration: float = Field(..., ge=0, le=20)
 
 
+class FeatureContribution(BaseModel):
+    feature: str
+    contribution: float
+
+
 class PredictionResult(BaseModel):
     risk_score: float
     risk_level: str
     failure_probability: float
     recommendation: str
     anomalies: List[str] = []
+    rul_days: int = 365
+    component_health: dict = {}
+    contributions: List[FeatureContribution] = []
 
 
 class PredictionRead(BaseModel):

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { listVehicles, listPredictions, runPrediction, predictForVehicle } from "../api/client.js";
+import { listVehicles, listPredictions, runPrediction, predictForVehicle, predictionExportUrl } from "../api/client.js";
 import RiskBadge from "../components/RiskBadge.jsx";
 import Select from "../components/Select.jsx";
+import { ComponentHealthBars, ContributionBars } from "../components/Meters.jsx";
 import { Spinner, EmptyState, SectionTitle, formatDate } from "../components/common.jsx";
 
 const FIELDS = [
@@ -19,6 +20,7 @@ export default function Predictions() {
   const [result, setResult] = useState(null);
   const [history, setHistory] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [riskFilter, setRiskFilter] = useState("all");
 
   useEffect(() => {
     listVehicles().then((v) => {
@@ -109,15 +111,46 @@ export default function Predictions() {
                 </ul>
               </div>
             )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-5 pt-5 border-t border-line">
+              <div className="panel p-4 text-center">
+                <p className="text-3xl font-extrabold text-ink">{result.rul_days}</p>
+                <p className="text-[10px] uppercase tracking-widest text-muted mt-1">Est. days to service (RUL)</p>
+              </div>
+              <div className="sm:col-span-2">
+                <p className="text-[10px] uppercase tracking-widest text-subtle mb-2">Why this score (top factors)</p>
+                <ContributionBars items={result.contributions} />
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <p className="text-[10px] uppercase tracking-widest text-subtle mb-2">Component Health</p>
+              <ComponentHealthBars data={result.component_health} />
+            </div>
           </div>
         )}
 
         <div className="card p-5">
-          <SectionTitle>Prediction History</SectionTitle>
+          <SectionTitle
+            action={
+              <div className="flex items-center gap-1.5">
+                {["all", "Low", "Medium", "High"].map((lvl) => (
+                  <button key={lvl} onClick={() => setRiskFilter(lvl)}
+                    className={`text-xs px-2.5 py-1 rounded-full transition-colors ${riskFilter === lvl ? "bg-brand text-white" : "bg-paper text-muted hover:text-ink"}`}>
+                    {lvl}
+                  </button>
+                ))}
+                <a href={predictionExportUrl(selected ? Number(selected) : undefined)}
+                  className="text-xs px-2.5 py-1 rounded-full bg-paper text-muted hover:text-ink">Export</a>
+              </div>
+            }
+          >
+            Prediction History
+          </SectionTitle>
           {!history ? (
             <Spinner />
-          ) : history.length === 0 ? (
-            <EmptyState title="No predictions yet" hint="Run and save a prediction to build history." />
+          ) : history.filter((p) => riskFilter === "all" || p.risk_level === riskFilter).length === 0 ? (
+            <EmptyState title="No predictions" hint="Run and save a prediction, or change the filter." />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -130,7 +163,7 @@ export default function Predictions() {
                   </tr>
                 </thead>
                 <tbody>
-                  {history.map((p) => (
+                  {history.filter((p) => riskFilter === "all" || p.risk_level === riskFilter).map((p) => (
                     <tr key={p.id} className="border-b border-line/70 hover:bg-neutral-50">
                       <td className="py-2.5 pr-4 text-subtle text-[11px] whitespace-nowrap">{formatDate(p.created_at)}</td>
                       <td className="py-2.5 pr-4 font-bold text-ink">{p.risk_score}</td>
