@@ -22,7 +22,7 @@ import Recommendations from "../components/Recommendations.jsx";
 import FleetMap from "../components/FleetMap.jsx";
 import { Spinner, SectionTitle, formatDate } from "../components/common.jsx";
 
-const RISK_COLORS = { Low: "#22c55e", Medium: "#f59e0b", High: "#ef4444" };
+const RISK_COLORS = { Low: "#10b981", Medium: "#f59e0b", High: "#ef4444" };
 const TOOLTIP = { background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 12, fontSize: 12, boxShadow: "0 8px 24px rgba(15,23,42,0.08)" };
 
 function buildRecommendations(alerts) {
@@ -172,15 +172,15 @@ export default function Dashboard() {
             <AreaChart data={trend}>
               <defs>
                 <linearGradient id="riskArea" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563eb" stopOpacity={0.35} />
-                  <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#0a6be8" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="#0a6be8" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="time" stroke="#94a3b8" fontSize={11} tickMargin={8} />
               <YAxis stroke="#94a3b8" fontSize={11} domain={[0, 100]} />
               <Tooltip contentStyle={TOOLTIP} />
-              <Area type="monotone" dataKey="risk" stroke="#2563eb" strokeWidth={2.5} fill="url(#riskArea)" />
+              <Area type="monotone" dataKey="risk" stroke="#0a6be8" strokeWidth={2.5} fill="url(#riskArea)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

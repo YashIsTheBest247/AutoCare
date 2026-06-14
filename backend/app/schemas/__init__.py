@@ -12,6 +12,7 @@ from app.schemas.maintenance import (
     MaintenanceRead,
 )
 from app.schemas.settings import ThresholdsUpdate, AlertConfig, EmailTest
+from app.schemas.auth import UserCreate, LoginRequest, UserRead, Token
 
 __all__ = [
     "VehicleCreate",
@@ -29,4 +30,8 @@ __all__ = [
     "ThresholdsUpdate",
     "AlertConfig",
     "EmailTest",
+    "UserCreate",
+    "LoginRequest",
+    "UserRead",
+    "Token",
 ]

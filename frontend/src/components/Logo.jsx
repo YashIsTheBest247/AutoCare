@@ -3,9 +3,9 @@ export function LogoMark({ className = "h-9 w-9", id = "acg" }) {
     <svg viewBox="0 0 40 40" className={className} fill="none" aria-hidden="true">
       <defs>
         <linearGradient id={id} x1="4" y1="36" x2="36" y2="6" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#2563eb" />
-          <stop offset="0.5" stopColor="#06b6d4" />
-          <stop offset="1" stopColor="#22c55e" />
+          <stop offset="0" stopColor="#93b8ff" />
+          <stop offset="0.5" stopColor="#0a6be8" />
+          <stop offset="1" stopColor="#0553c0" />
         </linearGradient>
       </defs>
       <path
@@ -23,8 +23,8 @@ export function LogoMark({ className = "h-9 w-9", id = "acg" }) {
         strokeLinecap="round"
         fill="none"
       />
-      <circle cx="29.5" cy="13.5" r="3.4" fill="#06b6d4" />
-      <circle cx="29.5" cy="13.5" r="3.4" fill="#06b6d4" className="animate-float-y" />
+      <circle cx="29.5" cy="13.5" r="3.4" fill="#4d97ff" />
+      <circle cx="29.5" cy="13.5" r="3.4" fill="#4d97ff" className="animate-float-y" />
     </svg>
   );
 }

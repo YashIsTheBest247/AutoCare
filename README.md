@@ -25,6 +25,7 @@ AutoCare AI monitors vehicle sensor telemetry, detects anomalies, predicts failu
 - **Vehicle Comparison** — compare health, RUL, and component breakdown across up to 3 vehicles.
 - **CSV Import/Export** — bulk-import sensor readings and export readings/predictions.
 - **Dark Mode** — light/dark theme toggle (persisted).
+- **JWT Authentication** — login/register, token-protected API, default seeded admin, per-user sessions with logout.
 - **Edge-first** — sub-millisecond CPU inference with a graceful heuristic fallback if the model is unavailable.
 
 ---
@@ -81,6 +82,19 @@ Frontend → **http://localhost:3000** · Backend → **http://localhost:8000**
 RandomForest pipeline trained on 6,000 generated samples:
 - **Accuracy:** ~98%  ·  **ROC-AUC:** ~0.997
 - Metrics & feature importances exposed at `GET /api/predictions/model-info` and the **Analytics** page.
+
+---
+
+## Authentication
+The API is protected with **JWT**. The frontend gates all pages behind a login screen.
+
+- A default admin is seeded on first run: **`admin@autocare.ai` / `admin123`**
+- Register additional users from the login page (role: operator).
+- Tokens are stored client-side and sent as `Authorization: Bearer <token>`; expired/invalid tokens redirect to login.
+
+Endpoints: `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`.
+
+> Change the admin credentials and `SECRET_KEY` for any non-local use — set `SECRET_KEY`, `DEFAULT_ADMIN_EMAIL`, `DEFAULT_ADMIN_PASSWORD` in `backend/.env`.
 
 ---
 
@@ -308,7 +322,9 @@ autocare/
 ## API Summary
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/health` | Health check |
+| GET | `/api/health` | Health check (open) |
+| POST | `/api/auth/register` · `/api/auth/login` | Auth — returns JWT (open) |
+| GET | `/api/auth/me` | Current user |
 | POST/GET/DELETE | `/api/vehicles` | Vehicle CRUD |
 | POST/GET | `/api/sensor-data` | Record/list readings (auto-prediction) |
 | POST | `/api/predictions/predict` | Stateless risk scoring |

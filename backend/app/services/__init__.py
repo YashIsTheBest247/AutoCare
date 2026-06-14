@@ -5,6 +5,7 @@ from app.services import (
     analytics_service,
     email_service,
     settings_service,
+    auth_service,
 )
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     "analytics_service",
     "email_service",
     "settings_service",
+    "auth_service",
 ]

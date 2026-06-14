@@ -4,7 +4,7 @@ export default function HealthGauge({ score = 0, size = 180 }) {
   const c = 2 * Math.PI * r;
   const pct = Math.max(0, Math.min(100, score));
   const offset = c * (1 - pct / 100);
-  const color = pct >= 70 ? "#22c55e" : pct >= 40 ? "#f59e0b" : "#ef4444";
+  const color = pct >= 70 ? "#10b981" : pct >= 40 ? "#f59e0b" : "#ef4444";
 
   return (
     <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>

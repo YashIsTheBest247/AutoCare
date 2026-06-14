@@ -4,6 +4,32 @@ const baseURL = import.meta.env.VITE_API_URL || "";
 
 const api = axios.create({ baseURL });
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+export const login = (email, password) =>
+  api.post("/api/auth/login", { email, password }).then((r) => r.data);
+export const register = (email, password, full_name) =>
+  api.post("/api/auth/register", { email, password, full_name }).then((r) => r.data);
+export const getMe = () => api.get("/api/auth/me").then((r) => r.data);
+
 export const getOverview = () => api.get("/api/dashboard/overview").then((r) => r.data);
 
 export const listVehicles = () => api.get("/api/vehicles").then((r) => r.data);
@@ -57,9 +83,18 @@ export const importSensorCsv = (file) => {
   form.append("file", file);
   return api.post("/api/sensor-data/import", form).then((r) => r.data);
 };
-export const sensorExportUrl = (vehicleId) =>
-  `${baseURL}/api/sensor-data/export${vehicleId ? `?vehicle_id=${vehicleId}` : ""}`;
-export const predictionExportUrl = (vehicleId) =>
-  `${baseURL}/api/predictions/export${vehicleId ? `?vehicle_id=${vehicleId}` : ""}`;
+const downloadCsv = async (path, filename) => {
+  const r = await api.get(path, { responseType: "blob" });
+  const href = URL.createObjectURL(r.data);
+  const a = document.createElement("a");
+  a.href = href;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(href);
+};
+export const exportSensorCsv = (vehicleId) =>
+  downloadCsv(`/api/sensor-data/export${vehicleId ? `?vehicle_id=${vehicleId}` : ""}`, "sensor_data.csv");
+export const exportPredictionCsv = (vehicleId) =>
+  downloadCsv(`/api/predictions/export${vehicleId ? `?vehicle_id=${vehicleId}` : ""}`, "predictions.csv");
 
 export default api;

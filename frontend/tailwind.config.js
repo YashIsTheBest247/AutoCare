@@ -12,13 +12,18 @@ export default {
         card: "rgb(var(--c-card) / <alpha-value>)",
         line: "rgb(var(--c-line) / <alpha-value>)",
         brand: {
-          light: "#3b82f6",
-          DEFAULT: "#2563eb",
-          dark: "#1d4ed8",
-          deep: "#1e3a8a",
+          light: "#4d97ff",
+          DEFAULT: "#0a6be8",
+          dark: "#0553c0",
+          deep: "#063a87",
+        },
+        navy: {
+          900: "#0b1020",
+          800: "#111733",
+          700: "#1b2347",
         },
         risk: {
-          low: "#22c55e",
+          low: "#10b981",
           medium: "#f59e0b",
           high: "#ef4444",
         },
@@ -28,8 +33,9 @@ export default {
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       boxShadow: {
-        soft: "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.05)",
-        lift: "0 10px 34px rgba(37,99,235,0.14)",
+        soft: "0 1px 2px rgba(15,23,42,0.04), 0 6px 20px rgba(15,23,42,0.05)",
+        lift: "0 18px 50px -12px rgba(10,107,232,0.26)",
+        glow: "0 0 0 1px rgba(10,107,232,0.18), 0 12px 40px -10px rgba(10,107,232,0.35)",
       },
       keyframes: {
         fadeUp: {
@@ -48,12 +54,32 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-3px)" },
         },
+        driveIn: {
+          "0%": { transform: "translateX(-130%)", opacity: "0" },
+          "55%": { transform: "translateX(6%)", opacity: "1" },
+          "75%": { transform: "translateX(-2%)" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
+        },
+        nod: {
+          "0%, 100%": { transform: "rotate(0) translateY(0)" },
+          "15%": { transform: "rotate(7deg) translateY(3px)" },
+          "30%": { transform: "rotate(0) translateY(0)" },
+          "50%": { transform: "rotate(7deg) translateY(3px)" },
+          "65%": { transform: "rotate(0) translateY(0)" },
+          "82%": { transform: "rotate(4deg) translateY(1px)" },
+        },
+        wheel: {
+          "0%": { transform: "rotate(0)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "fade-up": "fadeUp 0.5s cubic-bezier(0.2,0.7,0.3,1) both",
         "fade-in": "fadeIn 0.4s ease-out both",
         "pulse-draw": "dash 1.8s ease-in-out infinite",
         "float-y": "floatY 3s ease-in-out infinite",
+        "drive-in": "driveIn 1.1s cubic-bezier(0.2,0.8,0.2,1) both",
+        "nod": "nod 0.8s ease-in-out",
       },
     },
   },

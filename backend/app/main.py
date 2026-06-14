@@ -5,8 +5,8 @@ from fastapi.responses import JSONResponse
 
 from app.config import settings
 from app.database import init_db
-from app.routes import api_router
-from app.seed import seed, backfill_locations
+from app.routes import api_router, auth_router
+from app.seed import seed, backfill_locations, ensure_default_user
 from app.services import settings_service
 
 
@@ -15,6 +15,7 @@ async def lifespan(app: FastAPI):
     init_db()
     seed()
     backfill_locations()
+    ensure_default_user()
     settings_service.load_into_runtime()
     yield
 
@@ -34,6 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router)
 app.include_router(api_router)
 
 

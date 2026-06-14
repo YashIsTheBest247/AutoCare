@@ -20,7 +20,7 @@ const PAGES = [
   { label: "Analytics", path: "/analytics" },
 ];
 
-export default function Topbar() {
+export default function Topbar({ onMenu = () => {} }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const title = titles[pathname] || "AutoCare AI";
@@ -79,9 +79,16 @@ export default function Topbar() {
 
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between gap-4 bg-card/85 backdrop-blur border-b border-line px-6 py-3.5">
-      <div>
-        <h1 className="text-lg font-bold text-ink">{title}</h1>
-        <p className="text-xs text-muted">AI-Powered Vehicle Health Monitoring</p>
+      <div className="flex items-center gap-3 min-w-0">
+        <button onClick={onMenu} className="md:hidden h-10 w-10 rounded-xl border border-line bg-card flex items-center justify-center text-muted shrink-0">
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div className="min-w-0">
+          <h1 className="text-base sm:text-lg font-bold text-ink truncate">{title}</h1>
+          <p className="text-xs text-muted hidden sm:block">AI-Powered Vehicle Health Monitoring</p>
+        </div>
       </div>
       <div className="flex items-center gap-3">
         <div className="relative hidden sm:block" ref={searchRef}>

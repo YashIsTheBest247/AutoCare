@@ -4,20 +4,20 @@
 
 @layer base {
   :root {
-    --c-ink: 15 23 42;
-    --c-muted: 100 116 139;
-    --c-subtle: 148 163 184;
-    --c-paper: 238 242 247;
+    --c-ink: 17 24 39;
+    --c-muted: 107 114 128;
+    --c-subtle: 156 163 175;
+    --c-paper: 244 245 248;
     --c-card: 255 255 255;
-    --c-line: 226 232 240;
+    --c-line: 229 231 238;
   }
   .dark {
     --c-ink: 226 232 240;
     --c-muted: 148 163 184;
     --c-subtle: 100 116 139;
-    --c-paper: 15 23 42;
-    --c-card: 30 41 59;
-    --c-line: 51 65 85;
+    --c-paper: 9 12 24;
+    --c-card: 17 23 41;
+    --c-line: 31 41 64;
   }
   body {
     @apply bg-paper text-ink antialiased transition-colors;
@@ -35,16 +35,16 @@
 
 @layer components {
   .card {
-    @apply bg-card border border-line rounded-2xl shadow-soft transition-all duration-300 ease-out hover:shadow-lift hover:-translate-y-0.5;
+    @apply bg-card border border-line rounded-2xl shadow-soft transition-all duration-300 ease-out hover:shadow-lift hover:-translate-y-[3px];
   }
   .panel {
     @apply bg-paper border border-line rounded-xl;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand to-brand-light text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-all hover:from-brand-dark hover:to-brand disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-br from-brand-light via-brand to-brand-dark text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-[0_8px_20px_-8px_rgba(10,107,232,0.6)] transition-all hover:shadow-[0_10px_28px_-6px_rgba(10,107,232,0.7)] hover:-translate-y-px active:translate-y-0 disabled:opacity-50 disabled:shadow-none;
   }
   .btn-pill {
-    @apply inline-flex items-center justify-center gap-1.5 bg-card border border-line text-ink font-semibold text-sm px-4 py-2.5 rounded-xl transition-colors hover:bg-slate-50 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-1.5 bg-card border border-line text-ink font-semibold text-sm px-4 py-2.5 rounded-xl transition-colors hover:border-brand/50 hover:text-brand disabled:opacity-50;
   }
   .input {
     @apply w-full bg-card border border-line rounded-xl px-3.5 py-2.5 text-sm text-ink placeholder:text-subtle focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand;

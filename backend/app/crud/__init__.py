@@ -1,3 +1,3 @@
-from app.crud import vehicle, sensor_data, prediction, maintenance
+from app.crud import vehicle, sensor_data, prediction, maintenance, user
 
-__all__ = ["vehicle", "sensor_data", "prediction", "maintenance"]
+__all__ = ["vehicle", "sensor_data", "prediction", "maintenance", "user"]

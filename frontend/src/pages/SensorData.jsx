@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { listVehicles, listSensorData, createSensorData, importSensorCsv, sensorExportUrl } from "../api/client.js";
+import { listVehicles, listSensorData, createSensorData, importSensorCsv, exportSensorCsv } from "../api/client.js";
 import Select from "../components/Select.jsx";
 import { Spinner, EmptyState, SectionTitle, formatDate } from "../components/common.jsx";
 
@@ -104,8 +104,8 @@ export default function SensorData() {
                 className={`text-xs px-2.5 py-1 rounded-full transition-colors ${anomaliesOnly ? "bg-brand text-white" : "bg-paper text-muted hover:text-ink"}`}>
                 Anomalies
               </button>
-              <a href={sensorExportUrl(selected ? Number(selected) : undefined)}
-                className="text-xs px-2.5 py-1 rounded-full bg-paper text-muted hover:text-ink">Export CSV</a>
+              <button onClick={() => exportSensorCsv(selected ? Number(selected) : undefined)}
+                className="text-xs px-2.5 py-1 rounded-full bg-paper text-muted hover:text-ink">Export CSV</button>
               <button onClick={() => fileRef.current && fileRef.current.click()}
                 className="text-xs px-2.5 py-1 rounded-full bg-paper text-muted hover:text-ink">Import CSV</button>
               <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={onImport} />

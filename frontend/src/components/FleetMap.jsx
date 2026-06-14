@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import RiskBadge from "./RiskBadge.jsx";
 
-const RISK_COLORS = { Low: "#22c55e", Medium: "#f59e0b", High: "#ef4444" };
+const RISK_COLORS = { Low: "#10b981", Medium: "#f59e0b", High: "#ef4444" };
 
 function center(vehicles) {
   if (!vehicles.length) return [28.6139, 77.209];
@@ -33,7 +33,7 @@ export default function FleetMap({ vehicles }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {located.map((v) => {
-          const color = RISK_COLORS[v.latest_risk_level] || "#2563eb";
+          const color = RISK_COLORS[v.latest_risk_level] || "#0a6be8";
           return (
             <CircleMarker
               key={v.id}

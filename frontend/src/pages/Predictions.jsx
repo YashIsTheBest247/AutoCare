@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { listVehicles, listPredictions, runPrediction, predictForVehicle, predictionExportUrl } from "../api/client.js";
+import { listVehicles, listPredictions, runPrediction, predictForVehicle, exportPredictionCsv } from "../api/client.js";
 import RiskBadge from "../components/RiskBadge.jsx";
 import Select from "../components/Select.jsx";
 import { ComponentHealthBars, ContributionBars } from "../components/Meters.jsx";
@@ -140,8 +140,8 @@ export default function Predictions() {
                     {lvl}
                   </button>
                 ))}
-                <a href={predictionExportUrl(selected ? Number(selected) : undefined)}
-                  className="text-xs px-2.5 py-1 rounded-full bg-paper text-muted hover:text-ink">Export</a>
+                <button onClick={() => exportPredictionCsv(selected ? Number(selected) : undefined)}
+                  className="text-xs px-2.5 py-1 rounded-full bg-paper text-muted hover:text-ink">Export</button>
               </div>
             }
           >

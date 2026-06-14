@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     model_meta_path: str = os.path.join(ROOT_DIR, "ml", "models", "model_meta.json")
     cors_origins: str = "http://localhost:5173,http://localhost:3000"
 
+    secret_key: str = "change-me-in-production-autocare-ai-secret"
+    access_token_expire_minutes: int = 720
+    default_admin_email: str = "admin@autocare.ai"
+    default_admin_password: str = "admin123"
+
     smtp_host: str = Field(default="", validation_alias=AliasChoices("smtp_host", "mail_server"))
     smtp_port: int = Field(default=587, validation_alias=AliasChoices("smtp_port", "mail_port"))
     smtp_user: str = Field(default="", validation_alias=AliasChoices("smtp_user", "mail_username"))

@@ -72,6 +72,25 @@ def backfill_locations():
         db.close()
 
 
+def ensure_default_user():
+    from app import crud
+    from app.config import settings
+    from app.services import auth_service
+    db: Session = SessionLocal()
+    try:
+        if crud.user.count(db) > 0:
+            return
+        crud.user.create(
+            db,
+            settings.default_admin_email,
+            auth_service.hash_password(settings.default_admin_password),
+            full_name="Administrator",
+            role="admin",
+        )
+    finally:
+        db.close()
+
+
 def seed():
     db: Session = SessionLocal()
     try:
