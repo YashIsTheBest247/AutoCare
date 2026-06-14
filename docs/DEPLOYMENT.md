@@ -60,7 +60,44 @@ docker compose down -v       # also remove the SQLite volume
 
 ---
 
-## 3. Edge / Single-Host Production
+## 3. Public Website — Render (backend) + Vercel (frontend)
+
+This is the recommended path to put AutoCare AI online. The backend runs as a Docker web service on **Render** with managed **Postgres**; the frontend is a static build on **Vercel**.
+
+### Backend → Render
+The repo includes [`render.yaml`](../render.yaml) (a Render Blueprint) and [`Dockerfile.render`](../Dockerfile.render), which builds the API **and trains/bakes the ML model into the image** (so no model file needs committing).
+
+1. Push the repo to GitHub.
+2. In Render → **New → Blueprint**, point it at the repo. It provisions:
+   - `autocare-api` web service (Docker) — health-checked at `/api/health`
+   - `autocare-db` Postgres (free) — wired to the API via `DATABASE_URL`
+3. Set these env vars on the service (Blueprint marks them as required):
+   - `DEFAULT_ADMIN_PASSWORD` — your admin password (replaces the demo `admin123`)
+   - `CORS_ORIGINS` — your Vercel URL, e.g. `https://autocare.vercel.app`
+   - `SECRET_KEY` is auto-generated; `DATABASE_URL` is injected from the DB.
+   - (Optional) SMTP/MAIL vars for email alerts.
+4. Deploy. Note the public URL, e.g. `https://autocare-api.onrender.com`.
+
+> The code auto-normalizes Render's `postgres://` URL and enables `pool_pre_ping`. No SQLite migration runs on Postgres — tables are created fresh on first boot (admin + sample data seeded automatically).
+
+### Frontend → Vercel
+The repo includes [`frontend/vercel.json`](../frontend/vercel.json) (Vite framework + SPA rewrites).
+
+1. In Vercel → **New Project**, import the repo and set **Root Directory = `frontend`**.
+2. Add an env var: `VITE_API_URL = https://autocare-api.onrender.com` (your Render URL).
+3. Deploy. Vercel runs `npm run build` and serves `dist/` with SPA routing.
+4. Copy the Vercel domain back into the Render service's `CORS_ORIGINS` and redeploy the API.
+
+### Checklist
+- [ ] `DEFAULT_ADMIN_PASSWORD` changed from the demo value
+- [ ] `CORS_ORIGINS` = exact Vercel origin (no trailing slash)
+- [ ] `VITE_API_URL` = exact Render origin
+- [ ] First load shows the login; `admin@autocare.ai` + your password works
+- [ ] (Free Render tier sleeps when idle — first request after idle is slow; that's expected)
+
+---
+
+## 4. Edge / Single-Host Production
 
 The whole stack is designed to run on one machine (a laptop or an in-vehicle gateway).
 
