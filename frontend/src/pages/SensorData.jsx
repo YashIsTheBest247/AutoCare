@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { listVehicles, listSensorData, createSensorData } from "../api/client.js";
+import Select from "../components/Select.jsx";
 import { Spinner, EmptyState, SectionTitle, formatDate } from "../components/common.jsx";
 
 const FIELDS = [
@@ -52,9 +53,12 @@ export default function SensorData() {
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label className="label">Vehicle</label>
-            <select className="input" value={selected} onChange={(e) => setSelected(e.target.value)}>
-              {vehicles.map((v) => <option key={v.id} value={v.id}>{v.name}</option>)}
-            </select>
+            <Select
+              value={selected}
+              onChange={(v) => setSelected(String(v))}
+              options={vehicles.map((v) => ({ value: v.id, label: v.name }))}
+              placeholder="Select a vehicle"
+            />
           </div>
           {FIELDS.map((f) => (
             <div key={f.key}>

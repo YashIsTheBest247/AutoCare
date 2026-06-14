@@ -13,7 +13,7 @@ export default function Sidebar() {
   return (
     <aside className="hidden md:flex md:flex-col w-64 shrink-0 bg-gradient-to-b from-brand-deep via-brand-dark to-brand text-white min-h-screen p-5">
       <div className="mb-9 rounded-xl bg-white/10 px-3 py-2.5">
-        <Logo onDark markClassName="h-8 w-8" />
+        <Logo onDark showBadge={false} markClassName="h-8 w-8" />
       </div>
       <nav className="flex flex-col gap-1.5">
         {links.map((l) => (

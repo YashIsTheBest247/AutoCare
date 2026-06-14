@@ -5,7 +5,7 @@ import RiskBadge from "./RiskBadge.jsx";
 const RISK_COLORS = { Low: "#22c55e", Medium: "#f59e0b", High: "#ef4444" };
 
 function center(vehicles) {
-  if (!vehicles.length) return [37.7749, -122.4194];
+  if (!vehicles.length) return [28.6139, 77.209];
   const lat = vehicles.reduce((s, v) => s + v.latitude, 0) / vehicles.length;
   const lng = vehicles.reduce((s, v) => s + v.longitude, 0) / vehicles.length;
   return [lat, lng];

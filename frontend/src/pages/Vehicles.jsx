@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { listVehicles, createVehicle, deleteVehicle } from "../api/client.js";
 import RiskBadge from "../components/RiskBadge.jsx";
+import Select from "../components/Select.jsx";
 import { Spinner, EmptyState, SectionTitle, formatDate } from "../components/common.jsx";
 
 const VEHICLE_TYPES = ["car", "truck", "van", "bus", "motorcycle"];
@@ -48,10 +49,11 @@ export default function Vehicles() {
           </div>
           <div>
             <label className="label">Type</label>
-            <select className="input" value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value })}>
-              {VEHICLE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-            </select>
+            <Select
+              value={form.type}
+              onChange={(v) => setForm({ ...form, type: v })}
+              options={VEHICLE_TYPES.map((t) => ({ value: t, label: t.charAt(0).toUpperCase() + t.slice(1) }))}
+            />
           </div>
           <button className="btn-primary w-full" disabled={saving}>
             {saving ? "Adding..." : "Add Vehicle"}

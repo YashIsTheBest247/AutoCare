@@ -6,13 +6,14 @@ from fastapi.responses import JSONResponse
 from app.config import settings
 from app.database import init_db
 from app.routes import api_router
-from app.seed import seed
+from app.seed import seed, backfill_locations
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
     seed()
+    backfill_locations()
     yield
 
 

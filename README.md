@@ -1,4 +1,4 @@
-# 🚗 AutoCare AI
+# AutoCare
 
 **AI-Powered Vehicle Health and Predictive Maintenance System**
 *Edge AI for Automotive — predict vehicle failures before they happen.*
@@ -7,7 +7,7 @@ AutoCare AI monitors vehicle sensor telemetry, detects anomalies, predicts failu
 
 ---
 
-## ✨ Features
+## Features
 
 - **Vehicle Management** — add, list, view, and delete vehicles.
 - **Sensor Monitoring** — record engine temperature, battery voltage, RPM, fuel efficiency, and vibration.
@@ -18,7 +18,7 @@ AutoCare AI monitors vehicle sensor telemetry, detects anomalies, predicts failu
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Layer | Technologies |
 |-------|--------------|
@@ -29,7 +29,7 @@ AutoCare AI monitors vehicle sensor telemetry, detects anomalies, predicts failu
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Option A — Local (3 terminals)
 
@@ -66,25 +66,24 @@ Frontend → **http://localhost:3000** · Backend → **http://localhost:8000**
 
 ---
 
-## 📊 Model Performance
+## Model Performance
 RandomForest pipeline trained on 6,000 generated samples:
 - **Accuracy:** ~98%  ·  **ROC-AUC:** ~0.997
 - Metrics & feature importances exposed at `GET /api/predictions/model-info` and the **Analytics** page.
 
 ---
 
-## 📚 Documentation
+## Documentation
 | Document | Contents |
 |----------|----------|
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System & layered architecture, API flow, prediction flow (Mermaid) |
 | [docs/DATABASE.md](docs/DATABASE.md) | ER diagram and table reference (Mermaid) |
 | [docs/API.md](docs/API.md) | Full REST API documentation |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Local, Docker, and edge deployment guide |
-| [docs/PRESENTATION.md](docs/PRESENTATION.md) | Hackathon slides, future scope, Q&A prep |
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 autocare/
@@ -135,7 +134,7 @@ autocare/
 
 ---
 
-## 📖 File-by-File Explanation
+## File-by-File Explanation
 
 ### Root
 | Path | Purpose |
@@ -265,7 +264,7 @@ autocare/
 
 ---
 
-## 🔌 API Summary
+## API Summary
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/health` | Health check |
@@ -281,5 +280,3 @@ Full details in [docs/API.md](docs/API.md).
 
 ---
 
-## 📜 License
-Built for hackathon / educational use. Free to adapt.

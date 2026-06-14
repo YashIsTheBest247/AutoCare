@@ -10,10 +10,10 @@ from app.schemas import VehicleCreate
 from app.services import prediction_service
 
 SAMPLE_VEHICLES = [
-    {"name": "Fleet Truck 01", "model": "Volvo FH16", "type": "truck", "latitude": 37.7849, "longitude": -122.4094},
-    {"name": "Delivery Van A", "model": "Ford Transit", "type": "van", "latitude": 37.7649, "longitude": -122.4294},
-    {"name": "Executive Sedan", "model": "Toyota Camry", "type": "car", "latitude": 37.7899, "longitude": -122.4014},
-    {"name": "City Bus 12", "model": "Mercedes Citaro", "type": "bus", "latitude": 37.7599, "longitude": -122.4374},
+    {"name": "Fleet Truck 01", "model": "Tata Prima", "type": "truck", "latitude": 28.6315, "longitude": 77.2167},
+    {"name": "Delivery Van A", "model": "Mahindra Bolero", "type": "van", "latitude": 28.6129, "longitude": 77.2295},
+    {"name": "Executive Sedan", "model": "Honda City", "type": "car", "latitude": 28.6562, "longitude": 77.2410},
+    {"name": "City Bus 12", "model": "Ashok Leyland", "type": "bus", "latitude": 28.5535, "longitude": 77.2588},
 ]
 
 
@@ -33,6 +33,43 @@ def _reading(healthy: bool):
         "fuel_efficiency": round(random.uniform(6, 11), 2),
         "vibration": round(random.uniform(1.8, 4.5), 2),
     }
+
+
+CITY_SPOTS = [
+    (28.6315, 77.2167),
+    (28.6129, 77.2295),
+    (28.6562, 77.2410),
+    (28.5535, 77.2588),
+    (28.5672, 77.2100),
+    (28.5245, 77.1855),
+]
+
+INDIA_BOUNDS = {"lat": (6.0, 37.5), "lng": (68.0, 97.5)}
+
+
+def _outside_india(lat, lng):
+    if lat is None or lng is None:
+        return True
+    return not (INDIA_BOUNDS["lat"][0] <= lat <= INDIA_BOUNDS["lat"][1]
+                and INDIA_BOUNDS["lng"][0] <= lng <= INDIA_BOUNDS["lng"][1])
+
+
+def backfill_locations():
+    db: Session = SessionLocal()
+    try:
+        from app.models import Vehicle
+        vehicles = db.query(Vehicle).all()
+        targets = [v for v in vehicles if _outside_india(v.latitude, v.longitude)]
+        if not targets:
+            return
+        random.seed(11)
+        for i, v in enumerate(targets):
+            base = CITY_SPOTS[i % len(CITY_SPOTS)]
+            v.latitude = round(base[0] + random.uniform(-0.01, 0.01), 6)
+            v.longitude = round(base[1] + random.uniform(-0.01, 0.01), 6)
+        db.commit()
+    finally:
+        db.close()
 
 
 def seed():

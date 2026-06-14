@@ -6,14 +6,14 @@ from sqlalchemy.orm import Session
 from app.models import Vehicle
 from app.schemas import VehicleCreate
 
-BASE_LAT = 37.7749
-BASE_LNG = -122.4194
+BASE_LAT = 28.6139
+BASE_LNG = 77.2090
 
 
 def create(db: Session, data: VehicleCreate) -> Vehicle:
     payload = data.model_dump()
     if payload.get("latitude") is None or payload.get("longitude") is None:
-        payload["latitude"] = round(BASE_LAT + random.uniform(-0.04, 0.04), 6)
+        payload["latitude"] = round(BASE_LAT + random.uniform(-0.05, 0.05), 6)
         payload["longitude"] = round(BASE_LNG + random.uniform(-0.05, 0.05), 6)
     vehicle = Vehicle(**payload)
     db.add(vehicle)
