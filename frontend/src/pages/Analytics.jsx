@@ -77,7 +77,7 @@ export default function Analytics() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-xs text-muted py-10 text-center uppercase tracking-wider">Train the model to view feature importance.</p>
+            <p className="text-xs text-muted py-10 text-center uppercase tracking-wider">Loading...Please wait.</p>
           )}
         </div>
       </div>
