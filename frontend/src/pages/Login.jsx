@@ -43,7 +43,7 @@ export default function Login() {
   const split = phase === "split";
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
+    <div className="min-h-screen flex flex-col-reverse md:flex-row">
       <div
         className={`relative overflow-hidden bg-gradient-to-br from-brand-light via-brand to-brand-dark transition-all duration-700
           ${split ? "md:w-1/2 md:h-auto md:min-h-screen" : "w-full min-h-screen"}`}
@@ -60,14 +60,14 @@ export default function Login() {
         <div className={`absolute inset-0 transition-all duration-700 ${split ? "bg-gradient-to-t from-brand-deep/90 via-brand-deep/55 to-black/30" : "bg-black/10"}`} />
 
         {split && (
-          <div className="relative z-10 md:h-full flex flex-col justify-center p-8 sm:p-10 animate-fade-up">
-            <p className="text-3xl font-extrabold tracking-tight text-white drop-shadow">AutoCare <span className="text-white/80">AI</span></p>
+          <div className="relative z-10 md:h-full flex flex-col justify-center p-6 sm:p-10 animate-fade-up">
+            <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow">AutoCare <span className="text-white/80">AI</span></p>
             <p className="text-sm text-white/85 mt-1">Predict problems before they happen.</p>
 
-            <p className="text-[11px] uppercase tracking-widest text-white/70 mt-8 mb-3">Everything you get</p>
-            <ul className="space-y-2.5">
+            <p className="text-[11px] uppercase tracking-widest text-white/70 mt-5 sm:mt-8 mb-2.5 sm:mb-3">Everything you get</p>
+            <ul className="space-y-1.5 sm:space-y-2.5">
               {FEATURES.map((f) => (
-                <li key={f} className="flex items-center gap-2.5 text-white/95 text-sm">
+                <li key={f} className="flex items-center gap-2.5 text-white/95 text-[13px] sm:text-sm">
                   <span className="h-5 w-5 shrink-0 rounded-full bg-white/20 ring-1 ring-white/30 flex items-center justify-center">
                     <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -80,7 +80,7 @@ export default function Login() {
 
             <button
               onClick={() => { setMode("register"); setError(""); }}
-              className="mt-7 inline-flex w-fit items-center gap-2 bg-white text-brand-dark font-bold px-5 py-2.5 rounded-xl shadow-lg hover:bg-white/90 transition-colors"
+              className="mt-5 sm:mt-7 inline-flex w-fit items-center gap-2 bg-white text-brand-dark font-bold px-5 py-2.5 rounded-xl shadow-lg hover:bg-white/90 transition-colors"
             >
               Sign up for more
               <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
