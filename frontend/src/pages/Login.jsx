@@ -46,7 +46,7 @@ export default function Login() {
     <div className="min-h-screen flex flex-col md:flex-row">
       <div
         className={`relative overflow-hidden bg-gradient-to-br from-brand-light via-brand to-brand-dark transition-all duration-700
-          ${split ? "md:w-1/2 min-h-[40vh] md:min-h-screen" : "w-full min-h-screen"}`}
+          ${split ? "md:w-1/2 min-h-[32vh] md:min-h-screen" : "w-full min-h-screen"}`}
       >
         <video
           ref={videoRef}
