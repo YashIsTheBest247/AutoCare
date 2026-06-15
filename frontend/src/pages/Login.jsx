@@ -43,7 +43,7 @@ export default function Login() {
   const split = phase === "split";
 
   return (
-    <div className="min-h-screen flex flex-col-reverse md:flex-row">
+    <div className="min-h-screen flex flex-col md:flex-row">
       <div
         className={`relative overflow-hidden bg-gradient-to-br from-brand-light via-brand to-brand-dark transition-all duration-700
           ${split ? "md:w-1/2 md:h-auto md:min-h-screen" : "w-full min-h-screen"}`}
@@ -64,8 +64,8 @@ export default function Login() {
             <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow">AutoCare <span className="text-white/80">AI</span></p>
             <p className="text-sm text-white/85 mt-1">Predict problems before they happen.</p>
 
-            <p className="text-[11px] uppercase tracking-widest text-white/70 mt-5 sm:mt-8 mb-2.5 sm:mb-3">Everything you get</p>
-            <ul className="space-y-1.5 sm:space-y-2.5">
+            <p className="hidden md:block text-[11px] uppercase tracking-widest text-white/70 mt-5 sm:mt-8 mb-2.5 sm:mb-3">Everything you get</p>
+            <ul className="hidden md:block space-y-1.5 sm:space-y-2.5">
               {FEATURES.map((f) => (
                 <li key={f} className="flex items-center gap-2.5 text-white/95 text-[13px] sm:text-sm">
                   <span className="h-5 w-5 shrink-0 rounded-full bg-white/20 ring-1 ring-white/30 flex items-center justify-center">
