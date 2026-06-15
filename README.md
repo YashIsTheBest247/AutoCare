@@ -103,8 +103,9 @@ Endpoints: `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`
 ## Email Alerts (optional)
 High-risk readings can trigger an email. It's **off until SMTP is configured** — the app works fully without it.
 
-Add credentials to `backend/.env` (both `MAIL_*` and `SMTP_*` names are accepted):
+Add credentials to `backend/.env` locally, or as env vars on your host in production (both `MAIL_*` and `SMTP_*` names are accepted).
 
+**Gmail (good for local):**
 ```env
 MAIL_SERVER=smtp.gmail.com      # or SMTP_HOST
 MAIL_PORT=587                   # or SMTP_PORT
@@ -113,10 +114,22 @@ MAIL_PASSWORD=your_app_password # or SMTP_PASSWORD
 MAIL_FROM=you@gmail.com         # or SMTP_FROM
 MAIL_STARTTLS=True              # or SMTP_USE_TLS
 ```
+Gmail needs an **App Password** (Google Account → Security → App passwords, with 2-Step Verification on) — not your normal password.
 
-Then **restart the backend** (the `.env` is read at startup). On the **Settings** page, enable email alerts, set a recipient and minimum risk level, and use **Send Test** to verify.
+**Brevo / SendGrid / Mailgun (recommended on Render & most clouds):**
+Many hosts (including Render's free tier) **block outbound port 587**, so Gmail SMTP times out there. Use a transactional provider on **port 2525**:
+```env
+MAIL_SERVER=smtp-relay.brevo.com
+MAIL_PORT=2525
+MAIL_USERNAME=xxxxxxxx@smtp-brevo.com   # the provider's SMTP login
+MAIL_PASSWORD=xsmtpsib-...               # the provider's SMTP key
+MAIL_FROM=you@example.com                # must be a VERIFIED sender in the provider
+MAIL_STARTTLS=True
+```
 
-> Gmail requires an **App Password** (Google Account → Security → App passwords, with 2-Step Verification enabled) — not your normal password. Keep `backend/.env` out of version control (it's already git-ignored).
+Then **restart the backend** (or redeploy — the env is read at startup). On the **Settings** page, the banner should read "SMTP is configured"; set a recipient + minimum risk level and use **Send Test** to verify.
+
+> Keep real credentials out of git — `backend/.env` is already git-ignored; in production set them in your host's dashboard (e.g. Render → Environment).
 
 ---
 
