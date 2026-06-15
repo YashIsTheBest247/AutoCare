@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, register } from "../api/client.js";
 import { useAuth } from "../context/auth.jsx";
@@ -12,6 +12,14 @@ const FEATURES = [
   "Analytics, forecasting & email alerts",
 ];
 
+const LOADING_MESSAGES = [
+  "Initializing AI...",
+  "Loading Vehicle Insights...",
+  "Connecting to AutoCare AI...",
+  "Preparing Dashboard...",
+  "Analyzing System Status...",
+];
+
 export default function Login() {
   const { signIn } = useAuth();
   const navigate = useNavigate();
@@ -20,7 +28,23 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "", full_name: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [slow, setSlow] = useState(false);
+  const [msgIdx, setMsgIdx] = useState(0);
   const phase = "split";
+
+  useEffect(() => {
+    if (!loading) {
+      setSlow(false);
+      setMsgIdx(0);
+      return;
+    }
+    const delay = setTimeout(() => setSlow(true), 600);
+    const cycle = setInterval(() => setMsgIdx((i) => (i + 1) % LOADING_MESSAGES.length), 1800);
+    return () => {
+      clearTimeout(delay);
+      clearInterval(cycle);
+    };
+  }, [loading]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -44,6 +68,15 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
+      {slow && (
+        <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-6 bg-gradient-to-br from-brand-light via-brand to-brand-dark text-white animate-fade-in">
+          <span className="h-12 w-12 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+          <p key={msgIdx} className="text-base font-medium tracking-wide animate-fade-in">
+            {LOADING_MESSAGES[msgIdx]}
+          </p>
+          <p className="text-xs text-white/60">Waking the AI engine — this can take a few seconds.</p>
+        </div>
+      )}
       <div
         className={`relative overflow-hidden flex flex-col bg-gradient-to-br from-brand-light via-brand to-brand-dark transition-all duration-700
           ${split ? "md:w-1/2 min-h-[32vh] md:min-h-screen" : "w-full min-h-screen"}`}
