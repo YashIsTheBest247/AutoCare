@@ -69,12 +69,12 @@ export default function Login() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {slow && (
-        <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-6 bg-gradient-to-br from-brand-light via-brand to-brand-dark text-white animate-fade-in">
-          <span className="h-12 w-12 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-          <p key={msgIdx} className="text-base font-medium tracking-wide animate-fade-in">
+        <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-6 bg-gradient-to-br from-[#111114] to-[#000000] text-white animate-fade-in">
+          <span className="h-12 w-12 rounded-full border-2 border-white/25 border-t-white animate-spin" />
+          <p key={msgIdx} className="text-base font-semibold tracking-wide animate-fade-in">
             {LOADING_MESSAGES[msgIdx]}
           </p>
-          <p className="text-xs text-white/60">Waking the AI engine — this can take a few seconds.</p>
+          <p className="text-xs text-white/50">Waking the AI engine — this can take a few seconds.</p>
         </div>
       )}
       <div
