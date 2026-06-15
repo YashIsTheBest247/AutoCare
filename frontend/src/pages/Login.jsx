@@ -45,7 +45,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       <div
-        className={`relative overflow-hidden bg-gradient-to-br from-brand-light via-brand to-brand-dark transition-all duration-700
+        className={`relative overflow-hidden flex flex-col bg-gradient-to-br from-brand-light via-brand to-brand-dark transition-all duration-700
           ${split ? "md:w-1/2 min-h-[32vh] md:min-h-screen" : "w-full min-h-screen"}`}
       >
         <video
@@ -60,7 +60,7 @@ export default function Login() {
         <div className={`absolute inset-0 transition-all duration-700 ${split ? "bg-gradient-to-t from-brand-deep/90 via-brand-deep/55 to-black/30" : "bg-black/10"}`} />
 
         {split && (
-          <div className="relative z-10 h-full flex flex-col justify-between md:justify-center p-6 sm:p-10 animate-fade-up">
+          <div className="relative z-10 flex-1 flex flex-col justify-between md:justify-center p-6 sm:p-10 animate-fade-up">
             <div>
               <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow">AutoCare <span className="text-white/80">AI</span></p>
               <p className="text-sm text-white/85 mt-1">Predict problems before they happen.</p>
