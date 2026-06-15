@@ -46,7 +46,7 @@ export default function Login() {
     <div className="min-h-screen flex flex-col md:flex-row">
       <div
         className={`relative overflow-hidden bg-gradient-to-br from-brand-light via-brand to-brand-dark transition-all duration-700
-          ${split ? "md:w-1/2 min-h-[42vh] md:min-h-screen" : "w-full min-h-screen"}`}
+          ${split ? "md:w-1/2 min-h-[40vh] md:min-h-screen" : "w-full min-h-screen"}`}
       >
         <video
           ref={videoRef}
@@ -60,23 +60,25 @@ export default function Login() {
         <div className={`absolute inset-0 transition-all duration-700 ${split ? "bg-gradient-to-t from-brand-deep/90 via-brand-deep/55 to-black/30" : "bg-black/10"}`} />
 
         {split && (
-          <div className="relative z-10 md:h-full flex flex-col justify-center p-6 sm:p-10 animate-fade-up">
-            <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow">AutoCare <span className="text-white/80">AI</span></p>
-            <p className="text-sm text-white/85 mt-1">Predict problems before they happen.</p>
+          <div className="relative z-10 h-full flex flex-col justify-between md:justify-center p-6 sm:p-10 animate-fade-up">
+            <div>
+              <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow">AutoCare <span className="text-white/80">AI</span></p>
+              <p className="text-sm text-white/85 mt-1">Predict problems before they happen.</p>
 
-            <p className="hidden md:block text-[11px] uppercase tracking-widest text-white/70 mt-5 sm:mt-8 mb-2.5 sm:mb-3">Everything you get</p>
-            <ul className="hidden md:block space-y-1.5 sm:space-y-2.5">
-              {FEATURES.map((f) => (
-                <li key={f} className="flex items-center gap-2.5 text-white/95 text-[13px] sm:text-sm">
-                  <span className="h-5 w-5 shrink-0 rounded-full bg-white/20 ring-1 ring-white/30 flex items-center justify-center">
-                    <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </span>
-                  {f}
-                </li>
-              ))}
-            </ul>
+              <p className="hidden md:block text-[11px] uppercase tracking-widest text-white/70 mt-5 sm:mt-8 mb-2.5 sm:mb-3">Everything you get</p>
+              <ul className="hidden md:block space-y-1.5 sm:space-y-2.5">
+                {FEATURES.map((f) => (
+                  <li key={f} className="flex items-center gap-2.5 text-white/95 text-[13px] sm:text-sm">
+                    <span className="h-5 w-5 shrink-0 rounded-full bg-white/20 ring-1 ring-white/30 flex items-center justify-center">
+                      <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <button
               onClick={() => { setMode("register"); setError(""); }}
