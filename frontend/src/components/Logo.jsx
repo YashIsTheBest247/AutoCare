@@ -1,29 +1,17 @@
-export function LogoMark({ className = "h-9 w-9", id = "acg" }) {
+export function LogoMark({ className = "h-9 w-9" }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" aria-hidden="true">
-      <defs>
-        <linearGradient id={id} x1="4" y1="36" x2="36" y2="6" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#111111" />
-          <stop offset="1" stopColor="#3f3f46" />
-        </linearGradient>
-      </defs>
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
       <path
-        d="M7 35 L20 6 L33 35"
-        stroke={`url(#${id})`}
-        strokeWidth="5"
+        d="M2 8 H7 L9 4 L12 12 L15 8 H21"
+        stroke="currentColor"
+        strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
-        fill="none"
       />
-      <path
-        d="M13 25 H25"
-        stroke={`url(#${id})`}
-        strokeWidth="5"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <circle cx="29.5" cy="13.5" r="3.4" fill="#111111" />
-      <circle cx="29.5" cy="13.5" r="3.4" fill="#111111" className="animate-float-y" />
+      <circle cx="21" cy="8" r="1.3" fill="currentColor" />
+      <g transform="translate(6 12) scale(0.5)" fill="currentColor">
+        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
+      </g>
     </svg>
   );
 }

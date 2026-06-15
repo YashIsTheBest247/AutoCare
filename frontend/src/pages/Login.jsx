@@ -92,8 +92,8 @@ export default function Login() {
       </div>
 
       {split && (
-        <div className="md:w-1/2 flex items-center justify-center p-6 sm:p-10 bg-paper animate-fade-in">
-          <div className="w-full max-w-md">
+        <div className="md:w-1/2 flex items-center justify-center p-6 sm:p-10 bg-paper">
+          <div key={mode} className="w-full max-w-md animate-slide-in-right">
             <h1 className="text-2xl font-bold text-ink">{mode === "login" ? "Welcome back" : "Create account"}</h1>
             <p className="text-sm text-muted mb-6">
               {mode === "login" ? "Sign in to your fleet command center." : "Register a new operator account."}

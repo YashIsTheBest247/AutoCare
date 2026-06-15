@@ -78,6 +78,10 @@ export default {
           "0%": { transform: "translateY(-26px)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
         },
+        slideInRight: {
+          "0%": { transform: "translateX(28px)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
+        },
       },
       animation: {
         "fade-up": "fadeUp 0.5s cubic-bezier(0.2,0.7,0.3,1) both",
@@ -87,6 +91,7 @@ export default {
         "drive-in": "driveIn 1.1s cubic-bezier(0.2,0.8,0.2,1) both",
         "nod": "nod 0.8s ease-in-out",
         "drop-in": "dropDown 0.5s cubic-bezier(0.2,0.8,0.2,1) both",
+        "slide-in-right": "slideInRight 0.45s cubic-bezier(0.2,0.8,0.2,1) both",
       },
     },
   },
